@@ -1,0 +1,693 @@
+package com.delicato.visual.controller;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.bson.Document;
+
+import com.delicato.visual.config.SpringMongoConfig;
+import com.mongodb.BasicDBObject;
+import com.mongodb.Block;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+public class PredictionController {
+	
+	SpringMongoConfig mongoConfig=new SpringMongoConfig();
+	MongoClient mongoClient=mongoConfig.getMongoClient();
+	MongoDatabase db = mongoClient.getDatabase("delicato");
+	MongoCollection<Document> cimisCollection = db.getCollection("cimisdata");
+	MongoCollection<Document> dyostemCollection = db.getCollection("dyostemdata");
+	MongoCollection<Document> ratingCollection = db.getCollection("VintageRating");
+
+	VisualController vc = new VisualController();
+	final SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
+	SimpleDateFormat dFormat = new SimpleDateFormat("MM/dd/yy");
+	
+	
+	
+	double confIndexProfileP;
+	double confIndexBehavP ;
+	double evolOfTheVolP  ;
+	double tapCutOfDateP;
+	double indexOfGlobalConfP ;
+	double medHueP;
+	double hue1stP ;
+	double hue9thP  ;
+	double avgVolP ;
+	double volStdDevP  ;
+	double sugQuantP  ;
+	double sugConcP;
+	double tapBrixP;
+	double acidityP  ;
+	double malicAcidP ;
+	double phP ;
+	double azoteAssiP ;
+	double avgBerryWeightP  ;
+	double berryCountP ;
+	
+	
+	
+	public static void main(String[] args) {
+		
+		PredictionController pc = new PredictionController();
+		
+		String rootPath =System.getProperty("user.dir");
+		
+		//Harvest
+		String harvest = rootPath+"/src/main/webapp/harvest.xls";
+		pc.generateTrainingData("07/25/2015","09/26/2015", harvest);
+		pc.generateTrainingData("07/25/2014","09/26/2014", harvest);
+		pc.generateTrainingData("07/25/2013","09/26/2013", harvest);
+		pc.generateTrainingData("07/25/2012","09/26/2012", harvest);
+		pc.generateTrainingData("07/25/2011","09/26/2011", harvest);
+		pc.generateTrainingData("07/25/2010","09/26/2010", harvest);
+		
+				//Veraison
+				String veraison = rootPath+"/src/main/webapp/veraison.xls";
+				pc.generateTrainingData("07/10/2015","07/26/2015", veraison);
+				pc.generateTrainingData("07/10/2014","07/26/2014", veraison);
+				pc.generateTrainingData("07/10/2013","07/26/2013", veraison);
+				pc.generateTrainingData("07/10/2012","07/26/2012", veraison);
+				pc.generateTrainingData("07/10/2011","07/26/2011", veraison);
+				pc.generateTrainingData("07/10/2010","07/26/2010", veraison);
+				
+				//Closure
+				String closure = rootPath+"/src/main/webapp/closure.xls";
+				pc.generateTrainingData("06/04/2015","07/11/2015", closure);
+				pc.generateTrainingData("06/04/2014","07/11/2014", closure);
+				pc.generateTrainingData("06/04/2013","07/11/2013", closure);
+				pc.generateTrainingData("06/04/2012","07/11/2012", closure);
+				pc.generateTrainingData("06/04/2011","07/11/2011", closure);
+				pc.generateTrainingData("06/04/2010","07/11/2010", closure);
+				
+				//Set
+				String set = rootPath+"/src/main/webapp/set.xls";
+				pc.generateTrainingData("05/09/2015","06/05/2015", set);
+				pc.generateTrainingData("05/09/2014","06/05/2014", set);
+				pc.generateTrainingData("05/09/2013","06/05/2013", set);
+				pc.generateTrainingData("05/09/2012","06/05/2012", set);
+				pc.generateTrainingData("05/09/2011","06/05/2011", set);
+				pc.generateTrainingData("05/09/2010","06/05/2010", set);
+				
+				//Bloom
+				String bloom = rootPath+"/src/main/webapp/bloom.xls";
+				pc.generateTrainingData("03/22/2015","05/10/2015", bloom);
+				pc.generateTrainingData("03/22/2014","05/10/2014", bloom);
+				pc.generateTrainingData("03/22/2013","05/10/2013", bloom);
+				pc.generateTrainingData("03/22/2012","05/10/2012", bloom);
+				pc.generateTrainingData("03/22/2011","05/10/2011", bloom);
+				pc.generateTrainingData("03/22/2010","05/10/2010", bloom);
+				
+				//BudBreak
+				String budbreak = rootPath+"/src/main/webapp/budbreak.xls";
+				pc.generateTrainingData("03/22/2015","03/23/2015", budbreak);
+				pc.generateTrainingData("03/22/2014","03/23/2014", budbreak);
+				pc.generateTrainingData("03/22/2013","03/23/2013", budbreak);
+				pc.generateTrainingData("03/22/2012","03/23/2012", budbreak);
+				pc.generateTrainingData("03/22/2011","03/23/2011", budbreak);
+				pc.generateTrainingData("03/22/2010","03/23/2010", budbreak);
+	}
+	
+	public void generateTrainingData(String startDate, String endDate, final String filePath){
+		try {		
+			
+				Date sDate = null;
+				Date eDate = null;
+				
+				
+					sDate = dFormat.parse(startDate);
+					eDate = dFormat.parse(endDate);
+				
+				
+				BasicDBObject getQuery = new BasicDBObject();
+			    getQuery.put("_id", new BasicDBObject("$gt", sDate).append("$lt", eDate));
+				
+				FindIterable<Document> cursor = cimisCollection.find(getQuery).sort(new Document("_id",-1));
+				
+				cursor.forEach(new Block<Document>() {
+					
+				    public void apply(Document document) {
+				        System.out.println("inside doc");
+				        String date = "";
+				        Document a = (Document) document.get("hourlydata");
+				        ArrayList contents = (ArrayList) a.get("Records");
+				        double degree = 0;
+				        int daysCount = 0;
+				        String qDate = "";
+				        Date d = null;
+				        
+				        double netRadValue = 0 ;
+				        double relHumValue = 0 ;
+				        double vapPresValue = 0 ;
+				        double windDirValue = 0 ;
+				        double etoValue = 0 ;
+				        double asceEtrValue = 0 ;
+				        double airTmpValue = 0 ;
+				        double dewPntValue = 0 ;
+				        double precipValue = 0 ;
+				        double windSpdValue = 0 ;
+				        double resWindValue = 0 ;
+				        double solRadValue = 0 ;
+				        double soilTmpValue = 0 ;
+				        double asceEtoValue = 0 ;
+				        
+				        double confIndexProfile = 0 ;
+						double confIndexBehav = 0  ;
+						double evolOfTheVol = 0 ;
+						double tapCutOfDate = 0 ;
+						double indexOfGlobalConf = 0 ;
+						double medHue = 0 ;
+						double hue1st = 0 ;
+						double hue9th = 0 ;
+						double avgVol = 0 ;
+						double volStdDev = 0 ;
+						double sugQuant = 0 ;
+						double sugConc = 0 ;
+						double tapBrix = 0 ;
+						double acidity = 0 ;
+						double malicAcid = 0 ;
+						double ph = 0 ;
+						double azoteAssi = 0 ;
+						double avgBerryWeight = 0 ;
+						double berryCount = 0 ;
+						
+						Boolean matchFound = false;
+						
+				        int count = 1;
+				        for(int i=0; i<contents.size(); i++){
+				        	
+				        	if(count == 12){
+				        		
+				        		Document doc = (Document) contents.get(i);
+						        
+						        Document netRad = (Document) doc.get("HlyNetRad");
+						        Document relHum = (Document) doc.get("HlyRelHum");
+						        Document vapPres = (Document) doc.get("HlyVapPres");
+						        Document windDir = (Document) doc.get("HlyWindDir");
+						        Document eto = (Document) doc.get("HlyEto");
+						        date = (String) doc.get("Date");
+						        try {
+									d = mFormat.parse(date);
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+						        qDate = dFormat.format(d);
+						        Document asceEtr = (Document) doc.get("HlyAsceEtr");
+						        Document airTmp = (Document) doc.get("HlyAirTmp");
+						        Document dewPnt = (Document) doc.get("HlyDewPnt");
+						        Document precip = (Document) doc.get("HlyPrecip");
+						        Document windSpd = (Document) doc.get("HlyWindSpd");
+						        Document resWind = (Document) doc.get("HlyResWind");
+						        Document solRad = (Document) doc.get("HlySolRad");
+						        Document soilTmp = (Document) doc.get("HlySoilTmp");
+						        Document asceEto = (Document) doc.get("HlyAsceEto");
+						        
+						        if(netRad.get("Value") != null && netRad.get("Value") != "")
+						        netRadValue = Double.parseDouble((String) netRad.get("Value"));
+						        
+						        if(relHum.get("Value") != null && relHum.get("Value") != "")
+						        relHumValue = Double.parseDouble((String) relHum.get("Value"));
+						        
+						        if(vapPres.get("Value") != null && vapPres.get("Value") != "")
+						        vapPresValue = Double.parseDouble((String) vapPres.get("Value"));
+						        
+						        if(windDir.get("Value") != null && windDir.get("Value") != "")
+						        windDirValue = Double.parseDouble((String) windDir.get("Value"));
+						        
+						        if(eto.get("Value") != null && eto.get("Value") != "")
+						        etoValue = Double.parseDouble((String) eto.get("Value"));
+						        
+						        if(asceEtr.get("Value") != null && asceEtr.get("Value") != "")
+						        asceEtrValue = Double.parseDouble((String) asceEtr.get("Value"));
+						        
+						        if(airTmp.get("Value") != null && airTmp.get("Value") != "")
+						        airTmpValue = Double.parseDouble((String) airTmp.get("Value"));
+						        
+						        if(dewPnt.get("Value") != null && dewPnt.get("Value") != "")
+						        dewPntValue = Double.parseDouble((String) dewPnt.get("Value"));
+						        
+						        if(precip.get("Value") != null && precip.get("Value") != "")
+						        precipValue = Double.parseDouble((String) precip.get("Value"));
+						        
+						        if(windSpd.get("Value") != null && windSpd.get("Value") != "")
+						        windSpdValue = Double.parseDouble((String) windSpd.get("Value"));
+						        
+						        if(resWind.get("Value") != null && resWind.get("Value") != "")
+						        resWindValue = Double.parseDouble((String) resWind.get("Value"));
+						        
+						        if(solRad.get("Value") != null && solRad.get("Value") != "")
+						        solRadValue = Double.parseDouble((String) solRad.get("Value"));
+						        
+						        if(soilTmp.get("Value") != null && soilTmp.get("Value") != "")
+						        soilTmpValue = Double.parseDouble((String) soilTmp.get("Value"));
+						        
+						        if(asceEto.get("Value") != null && asceEto.get("Value") != "")
+						        asceEtoValue = Double.parseDouble((String) asceEto.get("Value"));
+						        
+						        
+						        
+						        BasicDBObject dyostemQuery = new BasicDBObject();
+						        dyostemQuery.put("Date of Analysis", qDate);
+						        dyostemQuery.put("Grape Variety", "Merlot B");
+						        System.out.println("date for query"+qDate+"---->"+dyostemQuery);
+								FindIterable<Document> cursor = dyostemCollection.find(dyostemQuery);
+								
+								Document match = cursor.first();
+								System.out.println("date for query"+match);
+								if(match != null){
+									
+									matchFound = true;
+									
+									if(match.get("Confidence Index profile") != null && match.get("Confidence Index profile") != ""){
+										if(match.get("Confidence Index profile") instanceof Double)
+											confIndexProfile =  (Double) match.get("Confidence Index profile");
+										else if(match.get("Confidence Index profile") instanceof Integer)
+											confIndexProfile =  (double) (Integer) match.get("Confidence Index profile");
+									}
+									
+									if(match.get("Confidence Index behaviour") != null && match.get("Confidence Index behaviour") != ""){
+										if(match.get("Confidence Index behaviour") instanceof Double)
+											confIndexBehav =  (Double) match.get("Confidence Index behaviour");
+										else if(match.get("Confidence Index behaviour") instanceof Integer)
+											confIndexBehav =  (double) (Integer) match.get("Confidence Index behaviour");
+									}
+									 
+									
+									if(match.get("Evolution of the volume") != null && match.get("Evolution of the volume") != ""){
+										if(match.get("Evolution of the volume") instanceof Double)
+											evolOfTheVol =  (Double) match.get("Evolution of the volume");
+										else if(match.get("Evolution of the volume") instanceof Integer)
+											evolOfTheVol =  (double) (Integer) match.get("Evolution of the volume");
+									}
+									
+									if(match.get("TAP at cut-off date") != null && match.get("TAP at cut-off date") != ""){
+										if(match.get("TAP at cut-off date") instanceof Double)
+											tapCutOfDate =  (Double) match.get("TAP at cut-off date");
+										else if(match.get("TAP at cut-off date") instanceof Integer)
+											tapCutOfDate =  (double) (Integer) match.get("TAP at cut-off date");
+									}
+									
+									if(match.get("Index of global confidence") != null && match.get("Index of global confidence") != ""){
+										if(match.get("Index of global confidence") instanceof Double)
+											indexOfGlobalConf =  (Double) match.get("Index of global confidence");
+										else if(match.get("Index of global confidence") instanceof Integer)
+											indexOfGlobalConf =  (double) (Integer) match.get("Index of global confidence");
+									}
+									
+									if(match.get("Median hue") != null && match.get("Median hue") != ""){
+										if(match.get("Median hue") instanceof Double)
+											medHue =  (Double) match.get("Median hue");
+										else if(match.get("Median hue") instanceof Integer)
+											medHue =  (double) (Integer) match.get("Median hue");
+									}
+									
+									if(match.get("Hue 1st decile") != null && match.get("Hue 1st decile") != ""){
+										if(match.get("Hue 1st decile") instanceof Double)
+											hue1st =  (Double) match.get("Hue 1st decile");
+										else if(match.get("Hue 1st decile") instanceof Integer)
+											hue1st =  (double) (Integer) match.get("Hue 1st decile");
+									}
+									 
+									 if(match.get("Hue 9th decile") != null && match.get("Hue 9th decile") != ""){
+											if(match.get("Hue 9th decile") instanceof Double)
+												hue9th =  (Double) match.get("Hue 9th decile");
+											else if(match.get("Hue 9th decile") instanceof Integer)
+												hue9th =  (double) (Integer) match.get("Hue 9th decile");
+										}
+									 
+									 if(match.get("Average Volume") != null && match.get("Average Volume") != ""){
+											if(match.get("Average Volume") instanceof Double)
+												avgVol =  (Double) match.get("Average Volume");
+											else if(match.get("Average Volume") instanceof Integer)
+												avgVol =  (double) (Integer) match.get("Average Volume");
+										}
+									 
+									 if(match.get("Volume Standard deviation") != null && match.get("Volume Standard deviation") != ""){
+											if(match.get("Volume Standard deviation") instanceof Double)
+												volStdDev =  (Double) match.get("Volume Standard deviation");
+											else if(match.get("Volume Standard deviation") instanceof Integer)
+												volStdDev =  (double) (Integer) match.get("Volume Standard deviation");
+										}
+									 
+									 if(match.get("Sugar quantity") != null && match.get("Sugar quantity") != ""){
+											if(match.get("Sugar quantity") instanceof Double)
+												sugQuant =  (Double) match.get("Sugar quantity");
+											else if(match.get("Sugar quantity") instanceof Integer)
+												sugQuant =  (double) (Integer) match.get("Sugar quantity");
+										}
+									 
+									 if(match.get("Sugar concentration") != null && match.get("Sugar concentration") != ""){
+											if(match.get("Sugar concentration") instanceof Double)
+												sugConc =  (Double) match.get("Sugar concentration");
+											else if(match.get("Sugar concentration") instanceof Integer)
+												sugConc =  (double) (Integer) match.get("Sugar concentration");
+										}
+									 
+									 if(match.get("TAP Brix") != null && match.get("TAP Brix") != ""){
+											if(match.get("TAP Brix") instanceof Double)
+												tapBrix =  (Double) match.get("TAP Brix");
+											else if(match.get("TAP Brix") instanceof Integer)
+												tapBrix =  (double) (Integer) match.get("TAP Brix");
+										}
+									 
+									 if(match.get("Total acidity") != null && match.get("Total acidity") != ""){
+											if(match.get("Total acidity") instanceof Double)
+												acidity =  (Double) match.get("Total acidity");
+											else if(match.get("Total acidity") instanceof Integer)
+												acidity =  (double) (Integer) match.get("Total acidity");
+										}
+									 
+									 if(match.get("Malic acid") != null && match.get("Malic acid") != ""){
+											if(match.get("Malic acid") instanceof Double)
+												malicAcid =  (Double) match.get("Malic acid");
+											else if(match.get("Malic acid") instanceof Integer)
+												malicAcid =  (double) (Integer) match.get("Malic acid");
+										}
+									 
+									 if(match.get("pH") != null && match.get("pH") != ""){
+											if(match.get("pH") instanceof Double)
+												ph =  (Double) match.get("pH");
+											else if(match.get("pH") instanceof Integer)
+												ph =  (double) (Integer) match.get("pH");
+										}
+									 
+									 if(match.get("Azote assimilable") != null && match.get("Azote assimilable") != ""){
+											if(match.get("Azote assimilable") instanceof Double)
+												azoteAssi =  (Double) match.get("Azote assimilable");
+											else if(match.get("Azote assimilable") instanceof Integer)
+												azoteAssi =  (double) (Integer) match.get("Azote assimilable");
+										}
+									 
+									 if(match.get("Average berry weight") != null && match.get("Average berry weight") != ""){
+											if(match.get("Average berry weight") instanceof Double)
+												avgBerryWeight =  (Double) match.get("Average berry weight");
+											else if(match.get("Average berry weight") instanceof Integer)
+												avgBerryWeight =  (double) (Integer) match.get("Average berry weight");
+										}
+									 
+									 if(match.get("Berries count") != null && match.get("Berries count") != ""){
+											if(match.get("Berries count") instanceof Double)
+												berryCount =  (Double) match.get("Berries count");
+											else if(match.get("Berries count") instanceof Integer)
+												berryCount =  (double) (Integer) match.get("Berries count");
+										}
+									 
+									 	 
+									 
+									 
+								}
+								
+								BasicDBObject ratingQuery = new BasicDBObject();
+								ratingQuery.put("_id", Integer.parseInt("20"+qDate.split("/")[2]));
+						        System.out.println("q------->"+ratingQuery);
+								FindIterable<Document> ratingCursor = ratingCollection.find(ratingQuery);
+								
+								Document ratingMatch = ratingCursor.first();
+								System.out.println("q------->"+ratingMatch);
+								Double rating = ratingMatch.getDouble("rating");
+									
+									writeToXls(matchFound, d, netRadValue, relHumValue, vapPresValue, windDirValue, etoValue, asceEtrValue, airTmpValue,
+							        		dewPntValue, precipValue, windSpdValue, resWindValue, solRadValue, soilTmpValue, asceEtoValue,
+							        		confIndexProfile, confIndexBehav, evolOfTheVol, tapCutOfDate, indexOfGlobalConf,
+							        		medHue, hue1st, hue9th, avgVol, volStdDev, sugQuant, sugConc, tapBrix,
+							        		acidity, malicAcid, ph, azoteAssi, avgBerryWeight, berryCount, rating, filePath);
+				        	}
+					        
+					        
+				        	count++;
+							
+				        }
+				        
+				        //vc.writeToCsv(d, degree);
+				        
+				    }
+				});
+				
+				//vc.xlsToCsv(inputFile, outputFile);
+				System.out.println("completed");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public void writeToXls(Boolean matchFound, Date date, Double netRadValue, Double relHumValue, Double vapPresValue, Double windDirValue, Double etoValue, Double asceEtrValue, Double airTmpValue,
+			Double dewPntValue, Double precipValue, Double windSpdValue, Double resWindValue, Double solRadValue, Double soilTmpValue, Double asceEtoValue,
+			Double confIndexProfile, Double confIndexBehav, Double evolOfTheVol, Double tapCutOfDate, Double indexOfGlobalConf,
+			Double medHue, Double hue1st, Double hue9th, Double avgVol, Double volStdDev, Double sugQuant, Double sugConc, Double tapBrix,
+			Double acidity, Double malicAcid, Double ph, Double azoteAssi, Double avgBerryWeight, Double berryCount, Double rating, String filePath)
+	{
+		
+		if(matchFound){
+			confIndexProfileP = confIndexProfile ;
+			 confIndexBehavP = confIndexBehav  ;
+			 evolOfTheVolP = evolOfTheVol ;
+			 tapCutOfDateP = tapCutOfDate ;
+			 indexOfGlobalConfP = indexOfGlobalConf ;
+			 medHueP = medHue ;
+			 hue1stP = hue1st ;
+			 hue9thP = hue9th ;
+			 avgVolP = avgVol ;
+			 volStdDevP = volStdDev ;
+			 sugQuantP = sugQuant ;
+			 sugConcP = sugConc ;
+			 tapBrixP = tapBrix ;
+			 acidityP = acidity ;
+			 malicAcidP = malicAcid ;
+			 phP = ph ;
+			 azoteAssiP = azoteAssi ;
+			 avgBerryWeightP = avgBerryWeight ;
+			 berryCountP = berryCount ;
+		}
+			try {
+				System.out.println("inside csv--->");
+				
+				HSSFWorkbook wb = null;
+				HSSFSheet sheet = null;
+				HSSFRow row = null;
+				HSSFCell cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, cell10, cell11, cell12, cell13, cell14, cell15, cell16, cell17, cell18, cell19, cell20 = null;
+				HSSFCell cell21, cell22, cell23, cell24, cell25, cell26, cell27, cell28, cell29, cell30, cell31, cell32, cell33, cell34, cell35 = null;
+				//HSSFCell cell2 = null;
+				File file = new File(filePath);
+				if(file.exists()){
+					InputStream inp = new FileInputStream(file);
+					 
+						wb = new HSSFWorkbook(inp);
+					sheet = wb.getSheetAt(0);
+					
+					
+				}else{
+					wb = new HSSFWorkbook();
+			         sheet = wb.createSheet();
+			         row = sheet.createRow(0);
+					 cell1 = row.createCell(0);
+					 cell1.setCellValue("Date");
+					 cell2 = row.createCell(1);
+					 cell2.setCellValue("netRad");
+					 cell3 = row.createCell(2);
+					 cell3.setCellValue("relHum");
+					 cell4 = row.createCell(3);
+					 cell4.setCellValue("vapPres");
+					 cell5 = row.createCell(4);
+					 cell5.setCellValue("windDir");
+					 cell6 = row.createCell(5);
+					 cell6.setCellValue("eto");
+					 cell7 = row.createCell(6);
+					 cell7.setCellValue("asceEtr");
+					 cell8 = row.createCell(7);
+					 cell8.setCellValue("airTmp");
+					 cell9 = row.createCell(8);
+					 cell9.setCellValue("dewPnt");
+					 cell10 = row.createCell(9);
+					 cell10.setCellValue("precip");
+					 cell11 = row.createCell(10);
+					 cell11.setCellValue("windSpd");
+					 cell12 = row.createCell(11);
+					 cell12.setCellValue("resWind");
+					 cell13 = row.createCell(12);
+					 cell13.setCellValue("solRad");
+					 cell14 = row.createCell(13);
+					 cell14.setCellValue("soilTmp");
+					 cell15 = row.createCell(14);
+					 cell15.setCellValue("asceEto");
+					 cell16 = row.createCell(15);
+					 cell16.setCellValue("confIndexProfile");
+					 cell17 = row.createCell(16);
+					 cell17.setCellValue("confIndexBehav");
+					 cell18 = row.createCell(17);
+					 cell18.setCellValue("evolOfTheVol");
+					 cell19 = row.createCell(18);
+					 cell19.setCellValue("tapCutOfDate");
+					 cell20 = row.createCell(19);
+					 cell20.setCellValue("indexOfGlobalConf");
+					 cell21 = row.createCell(20);
+					 cell21.setCellValue("medHue");
+					 cell22 = row.createCell(21);
+					 cell22.setCellValue("hue1st");
+					 cell23 = row.createCell(22);
+					 cell23.setCellValue("hue9th");
+					 cell24 = row.createCell(23);
+					 cell24.setCellValue("avgVol");
+					 cell25 = row.createCell(24);
+					 cell25.setCellValue("volStdDev");
+					 cell26 = row.createCell(25);
+					 cell26.setCellValue("sugQuant");
+					 cell27 = row.createCell(26);
+					 cell27.setCellValue("sugConc");
+					 cell28 = row.createCell(27);
+					 cell28.setCellValue("tapBrix");
+					 cell29 = row.createCell(28);
+					 cell29.setCellValue("acidity");
+					 cell30 = row.createCell(29);
+					 cell30.setCellValue("malicAcid");
+					 cell31 = row.createCell(30);
+					 cell31.setCellValue("ph");
+					 cell32 = row.createCell(31);
+					 cell32.setCellValue("azoteAssi");
+					 cell33 = row.createCell(32);
+					 cell33.setCellValue("avgBerryWeight");
+					 cell34 = row.createCell(33);
+					 cell34.setCellValue("berryCount");
+					 cell35 = row.createCell(34);
+					 cell35.setCellValue("rating");
+				} 
+				
+				row = sheet.createRow(sheet.getLastRowNum()+1);
+				cell1 = row.createCell(0);
+				cell2 = row.createCell(1);
+				cell3 = row.createCell(2);
+				cell4 = row.createCell(3);
+				cell5 = row.createCell(4);
+				cell6 = row.createCell(5);
+				cell7 = row.createCell(6);
+				cell8 = row.createCell(7);
+				cell9 = row.createCell(8);
+				cell10 = row.createCell(9);
+				cell11 = row.createCell(10);
+				cell12 = row.createCell(11);
+				cell13 = row.createCell(12);
+				cell14 = row.createCell(13);
+				cell15 = row.createCell(14);
+				cell16 = row.createCell(15);
+				cell17 = row.createCell(16);
+				cell18 = row.createCell(17);
+				cell19 = row.createCell(18);
+				cell20 = row.createCell(19);
+				cell21 = row.createCell(20);
+				cell22 = row.createCell(21);
+				cell23 = row.createCell(22);
+				cell24 = row.createCell(23);
+				cell25 = row.createCell(24);
+				cell26 = row.createCell(25);
+				cell27 = row.createCell(26);
+				cell28 = row.createCell(27);
+				cell29 = row.createCell(28);
+				cell30 = row.createCell(29);
+				cell31 = row.createCell(30);
+				cell32 = row.createCell(31);
+				cell33 = row.createCell(32);
+				cell34 = row.createCell(33);
+				cell35 = row.createCell(34);
+				//System.out.println("---------------->"+date);
+				HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
+				
+				CreationHelper createHelper = wb.getCreationHelper();
+				cellStyle.setDataFormat(
+				    createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
+				
+				cell1.setCellValue((Date) date);
+				cell1.setCellStyle(cellStyle);
+				
+				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell2.setCellValue(netRadValue);
+				cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell3.setCellValue(relHumValue);
+				cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell4.setCellValue(vapPresValue);
+				cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell5.setCellValue(windDirValue);
+				cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell6.setCellValue(etoValue);
+				cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell7.setCellValue(asceEtrValue);
+				cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell8.setCellValue(airTmpValue);
+				cell9.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell9.setCellValue(dewPntValue);
+				cell10.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell10.setCellValue(precipValue);
+				cell11.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell11.setCellValue(windSpdValue);
+				cell12.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell12.setCellValue(resWindValue);
+				cell13.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell13.setCellValue(solRadValue);
+				cell14.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell14.setCellValue(soilTmpValue);
+				cell15.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell15.setCellValue(asceEtoValue);
+				cell16.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell16.setCellValue(confIndexProfileP);
+				cell17.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell17.setCellValue(confIndexBehavP);
+				cell18.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell18.setCellValue(evolOfTheVolP);
+				cell19.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell19.setCellValue(tapCutOfDateP);
+				cell20.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell20.setCellValue(indexOfGlobalConfP);
+				cell21.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell21.setCellValue(medHueP);
+				cell22.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell22.setCellValue(hue1stP);
+				cell23.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell23.setCellValue(hue9thP);
+				cell24.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell24.setCellValue(avgVolP);
+				cell25.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell25.setCellValue(volStdDevP);
+				cell26.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell26.setCellValue(sugQuantP);
+				cell27.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell27.setCellValue(sugConcP);
+				cell28.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell28.setCellValue(tapBrixP);
+				cell29.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell29.setCellValue(acidityP);
+				cell30.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell30.setCellValue(malicAcidP);
+				cell31.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell31.setCellValue(phP);
+				cell32.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell32.setCellValue(azoteAssiP);
+				cell33.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell33.setCellValue(avgBerryWeightP);
+				cell34.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell34.setCellValue(berryCountP);
+				cell35.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell35.setCellValue(rating);
+				
+				FileOutputStream fileOut = new FileOutputStream(filePath);
+				wb.write(fileOut);
+				fileOut.close();
+			}  catch (IOException e) {
+				e.printStackTrace();
+			}
+		  }
+}
