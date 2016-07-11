@@ -80,17 +80,8 @@
 				series: []
 			};
 			
-			/*
-			 Load the data from the CSV file. This is the contents of the file:
-			 
-				Apples,Pears,Oranges,Bananas,Plums
-				John,8,4,6,5
-				Jane,3,4,2,3
-				Joe,86,76,79,77
-				Janet,3,16,13,15
-				
-			 */ 
-			$.get('data.csv', function(data) {
+			
+			$.get('degreedays.csv', function(data) {
 				// Split the lines
 				var lines = data.split('\n');
 				$.each(lines, function(lineNo, line) {
@@ -129,8 +120,8 @@
 		
 		<script type="text/javascript">
 		$(document).ready(function() {
-			//function for receving  the date selected
-			function sravya(date){
+			
+			//function sravya(date){
 				//alert(date);
 
 			//chart to be displayed when date is selected
@@ -161,7 +152,7 @@
 				series: []
 			};	
 			
-			$.get('temp.csv', function(data) {
+			$.get('cimis2.csv', function(data) {
 				// Split the lines
 				var lines = data.split('\n');
 					
@@ -171,17 +162,15 @@
 					if (lineNo==0) {
 
             			$.each(items, function(itemNo, item) {
-	                		if(itemNo==0){
+								if(itemNo>0&& itemNo<5){
+	                			
 	                    		options1.series.push({
 	                        	name: item,
 	                        	data: []
 	                   			});
 	                   			
 	                		}
-	                		
-	                		
             			});
-            			
         			} 
         			else {
 
@@ -190,13 +179,21 @@
                     			options1.xAxis.categories.push(item);
 
                 			} 
-                			else if(itemNo===1) {  //each other value for series  + parsing prevent nulls*/
-                    					options1.series[itemNo-1].data.push(parseFloat(item));
-                    				
-                				
+                			else if (itemNo===1) { /* each other value for series  + parsing prevent nulls*/
+                    			options1.series[itemNo-1].data.push(parseFloat(item));
+
                 			}
-                			else if(item == "null") { /* adding nulls */
-                    			options1.series[itemNo - 1].data.push(null);
+                			else if (itemNo===2) { /* each other value for series  + parsing prevent nulls*/
+                    			options1.series[itemNo - 1].data.push(parseFloat(item));
+
+                			}
+                			else if (itemNo===3) { /* each other value for series  + parsing prevent nulls*/
+                    			options1.series[itemNo - 1].data.push(parseFloat(item));
+
+                			}
+                			else if (itemNo==4) { /* each other value for series  + parsing prevent nulls*/
+                    			options1.series[itemNo - 1].data.push(parseFloat(item));
+
                 			}
             			});
 
@@ -206,16 +203,16 @@
 				
 				var chart = new Highcharts.Chart(options1);
 			});
-}
+//}
 			//intial charts with all categories
 			var options = {
 				chart: {
-					renderTo: 'dyostemcontainer',
+					renderTo: 'cimiscontainer',
 					type:'spline'
 					
 				},
 				title: {
-					text: 'Temparature analysis'
+					text: 'cimisanalysis'
 				},
 				xAxis: {
 				        
@@ -233,8 +230,8 @@
                     point: {
                         events: {
                             click: function (e) {
-                            	if(this.series.name=='temparature'){
-                               /* hs.htmlExpand(null, {
+                            	//if(this.series.name=='temparature'){
+                               /*hs.htmlExpand(null, {
                                     
                                     headingText: this.series.xAxis.categories[this.x],
                                     maincontentText: Highcharts.dateFormat('%a %d %b %H:%M', this.x) + ':<br/> ' +
@@ -242,9 +239,11 @@
 
                                 });*/
 								//to send date selected
-								sravya(this.series.xAxis.categories[this.x]);
-								//var chart = new Highcharts.Chart(options1);
-                            }
+								//sravya(this.series.xAxis.categories[this.x]);
+                                var chart = new Highcharts.Chart(options1);
+								kavya(this.series.xAxis.categories[this.x]);
+								
+								/* }
                             else if(this.series.name=='pressure'){
                                 
 								sravya(this.series.xAxis.categories[this.x]);
@@ -256,7 +255,7 @@
                             else{
                                 
 								sravya(this.series.xAxis.categories[this.x]);
-                            }
+                            }*/
 
                             }
                         }
@@ -275,7 +274,7 @@
 				series: []
 			};	
 			
-			$.get('data1.csv', function(data) {
+			$.get('cimis1.csv', function(data) {
 				// Split the lines
 				var lines = data.split('\n');
 					
@@ -283,7 +282,7 @@
 					var items = line.split(',');
 					if (lineNo === 0) {
             			$.each(items, function(itemNo, item) {
-	                		if(itemNo>0){
+	                		if(itemNo>0&& itemNo<5){
 	                			
 	                    		options.series.push({
 	                        	name: item,
@@ -311,14 +310,14 @@
                     			options.series[itemNo - 1].data.push(parseFloat(item));
 
                 			}
-                			else if (itemNo===4) { /* each other value for series  + parsing prevent nulls*/
+                			else if (itemNo==4) { /* each other value for series  + parsing prevent nulls*/
                     			options.series[itemNo - 1].data.push(parseFloat(item));
 
                 			}
 
-                			else if (item == "null") { /* adding nulls */
+                			/*else if (item == "null") { /* adding nulls 
                     			options.series[itemNo - 1].data.push(null);
-                			}
+                			}*/
             			});
 
         			}
@@ -327,8 +326,140 @@
 				
 				var chart = new Highcharts.Chart(options);
 			});	
+			var options2 = {
+				chart: {
+					renderTo: 'cimiscontainer2',
+					type:'spline'
+					
+				},
+				title: {
+					text: 'cimisanalysis'
+				},
+				xAxis: {
+				        
+					categories: []
+				},
+				tooltip: {
+                shared: true,
+                crosshairs: true,
+           
+                
+            },
+				 plotOptions: {
+                series: {
+                    cursor: 'pointer',
+                    point: {
+                        events: {
+                            click: function (e) {
+                            	//if(this.series.name=='temparature'){
+                               /*hs.htmlExpand(null, {
+                                    
+                                    headingText: this.series.xAxis.categories[this.x],
+                                    maincontentText: Highcharts.dateFormat('%a %d %b %H:%M', this.x) + ':<br/> ' +
+                                        this.y + ' visits', width: 200
+
+                                });*/
+								//to send date selected
+								//sravya(this.series.xAxis.categories[this.x]);
+                                var chart = new Highcharts.Chart(options1);
+								kavya(this.series.xAxis.categories[this.x]);
+								
+								/* }
+                            else if(this.series.name=='pressure'){
+                                
+								sravya(this.series.xAxis.categories[this.x]);
+                            }
+                            else if(this.series.name=='time'){
+                                
+								sravya(this.series.xAxis.categories[this.x]);
+                            }
+                            else{
+                                
+								sravya(this.series.xAxis.categories[this.x]);
+                            }*/
+
+                            }
+                        }
+                    },
+                    marker: {
+                        lineWidth: 1
+                    }
+                }
+            },
+
+				yAxis: {
+					title: {
+						text: 'Temparature'
+					}
+				},
+				series: []
+			};	
 			
+			$.get('cimis3.csv', function(data) {
+				// Split the lines
+				var lines = data.split('\n');
+					
+				$.each(lines, function(lineNo, line) {
+					var items = line.split(',');
+					if (lineNo === 0) {
+            			$.each(items, function(itemNo, item) {
+	                		if(itemNo>0&& itemNo<5){
+	                			
+	                    		options2.series.push({
+	                        	name: item,
+	                        	data: []
+	                   			});
+	                   			
+	                		}
+            			});
+        			} 
+        			else {
+            			$.each(items, function(itemNo, item) {
+                			if (itemNo === 0) { /* first item containes year */
+                    			options2.xAxis.categories.push(item);
+
+                			} 
+                			else if (itemNo===1) { /* each other value for series  + parsing prevent nulls*/
+                    			options2.series[itemNo-1].data.push(parseFloat(item));
+
+                			}
+                			else if (itemNo===2) { /* each other value for series  + parsing prevent nulls*/
+                    			options2.series[itemNo - 1].data.push(parseFloat(item));
+
+                			}
+                			else if (itemNo===3) { /* each other value for series  + parsing prevent nulls*/
+                    			options2.series[itemNo - 1].data.push(parseFloat(item));
+
+                			}
+                			else if (itemNo==4) { /* each other value for series  + parsing prevent nulls*/
+                    			options2.series[itemNo - 1].data.push(parseFloat(item));
+
+                			}
+
+                			/*else if (item == "null") { /* adding nulls 
+                    			options.series[itemNo - 1].data.push(null);
+                			}*/
+            			});
+
+        			}
+									
+				});
+				
+				var chart = new Highcharts.Chart(options2);
+			});
+function kavya(id){
+				
+				
+				//alert(id);
+				document.getElementById('givendate').value = id;
+
+				document.forms["factors"];
+				document.forms["hiddenfield"].submit();
+	
+				}
 		});
+			
+		
 		</script>
 </head>
 
@@ -393,7 +524,7 @@
             
             <!-- Single Navigation Menu Button -->
             
-            <div data-url_target="portfolio" class="portfolio-btn menu_button">
+            <div data-url_target="cimis" class="portfolio-btn menu_button">
                 <img alt="" src="resources/img/portfolio.jpg">
                 <div class="mask">
                 </div>
@@ -405,7 +536,7 @@
             
             <!-- Single Navigation Menu Button [ END ]  -->
             
-            <div data-url_target="service" class="service-btn menu_button">
+            <div data-url_target="degreedays" class="service-btn menu_button">
                 <img alt="" src="resources/img/service.jpg">
                 <div class="mask">
                 </div>
@@ -442,66 +573,10 @@
     5 ) Profile Page
     -->
 
-    <div id="dyostem" class="profile-page container-fluid page">
-        <div class="row">
-            <!--( a ) Profile Page Fixed Image Portion -->
-
-            <div class="image-container col-md-3 col-sm-12">
-                <div class="mask">
-                </div>
-                <div class="main-heading">
-                    <h1>About us</h1>
-                </div>
-            </div>
-
-            <!--( b ) Profile Page Content -->
-
-			<div style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto; margin-top: 20px">
-		<form:form action="${pageContext.request.contextPath}/cimis#dyostem" method="post" name="factors">
-        	<div class="">
-        			<input type="text" class="" value="${startdate}" id="startdate" name="startdate" placeholder="Start Date">
-        			<input type="text" class="" value="${enddate}" id="enddate" name="enddate" placeholder="End Date" >
-        		
-        		
-                    <button type="submit" class="">Search</button>
-                <br><br>
-             </div>                    
-               <div id="dyostemcontainer" style="width: 80%; height: 80%; margin: 0 auto"></div>
-               <br><br>
-		<div  id="report"></div>             	                 
-        </form:form>
-	</div>
-            <div class="content-container col-md-9 col-sm-12">
-
-				
-         
-                <!--( D ) Footer -->
-
-                <div class="footer clearfix">
-                    <div class="row">
-                        <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-12 col-xs-12">
-                                    <p class="copyright">Copyright &copy; 2015
-                                        <a href="#">Your Company</a>
-                                    </p>
-                                </div>
-
-                                <div class="col-md-6 col-sm-12 col-xs-12">
-                                    <p class="author">
-                                        Theme by <a href="https://themewagon.com/" target="_blank">ThemeWagon</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
 
-    <div id="portfolio" class="portfolio-page container-fluid page">
+    <div id="dyostem" class="portfolio-page container-fluid page">
 
         <div class="row">
 
@@ -862,16 +937,11 @@
                         <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
                             <div class="row">
                                 <div class="col-md-6 col-sm-12 col-xs-12">
-                                    <p class="copyright">Copyright &copy; 2015 
-                                        <a href="#">Your Company</a>
+                                    <p class="copyright">Copyright &copy; 2016 
+                                        <a href="www.delicato.com">Delicato</a>
                                     </p>
                                 </div>
 
-                                <div class="col-md-6 col-sm-12 col-xs-12">
-                                    <p class="author">
-                                        Theme by <a href="https://themewagon.com/" target="_blank">ThemeWagon</a>
-                                    </p>
-                                </div>
                             </div>      
                         </div>
                     </div>
@@ -879,71 +949,128 @@
             </div>
         </div>
     </div>
+   <!--  cimis data-->
+ <div id="cimis" class="profile-page container-fluid page">
+        <div class="row">
+            <!--( a ) Profile Page Fixed Image Portion -->
 
+            <div class="image-container col-md-3 col-sm-12">
+                <div class="mask">
+                </div>
+                <div class="main-heading">
+                    <h1>About us</h1>
+                </div>
+            </div>
+
+            <!--( b ) Profile Page Content -->
+
+			<div style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto; margin-top: 20px">
+		<form:form action="${pageContext.request.contextPath}/cimis#cimis" method="post" name="factors">
+        	<div class="">
+        			<input type="text" class="" value="${startdate}" id="startdate" name="startdate" placeholder="Start Date">
+        			<input type="text" class="" value="${enddate}" id="enddate" name="enddate" placeholder="End Date" >
+        			<!--<input type="text" class="" value="${getdate}" id="givendate" name="givendate" placeholder="get Date" >-->
+        		
+                    <button type="submit" class="">Search</button>
+                <br><br>
+             </div>                    
+               <div id="cimiscontainer" style="width: 50%; height: 80%; margin: 0 auto; float:left"></div>
+			   <div id="cimiscontainer2" style="width: 50%; height: 80%; margin: 0 auto;float: right"></div>
+                            <br><br>
+         </form:form>     
+         <form:form action="${pageContext.request.contextPath}/cimissubgraph#cimis" method="post" name="factors" id="hiddenfield">     
+			<div class="">
+			<input type="hidden" id="givendate" name="givendate"/> 
+			 </div>           
+                <div  id="report"></div>    
+               <br><br>
+         </form:form>    
+			     	                 
+       
+	</div>
+            <div class="content-container col-md-9 col-sm-12">
+
+				
+         
+                <!--( D ) Footer -->
+
+                <div class="footer clearfix">
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-12 col-xs-12">
+                                    <p class="copyright">Copyright &copy; 2016 
+                                        <a href="www.delicato.com">Delicato</a>
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <!--
     7 ) Service Page
     -->
     
-    <div id="service" class="service-page container-fluid page">
-        <div class="row">
-            <!--( a ) Portfolio Page Fixed Image Portion -->
+    <div id="degreedays" class="service-page container-fluid page">
+     	 <div class="row">
+            <!--( a ) Contact Page Fixed Image Portion -->
             
             <div class="image-container col-md-3 col-sm-12">
                 <div class="mask">
                 </div>
                 <div class="main-heading">
-                    <h1>Service</h1>
+                    <h1>Degree Days</h1>
                 </div>
             </div>
             
-            <!--( b ) Portfolio Page Content -->
+            <!--( b ) Contact Page Content -->
             
             <div class="content-container col-md-9 col-sm-12">
                 
-                <!--( A ) Portfolio -->
+                <!--( A ) Contact Form -->
                 
-   			<div style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto; margin-top: 20px">
-		<form:form action="${pageContext.request.contextPath}/degreedays#service" method="post" name="factors">
-        	<div class="">
-        		<div style="float: left; width: 25%;">
-        			<input type="text" class="" value="${startdate}" id="startdate" name="startdate" placeholder="Start Date">
-        			<input type="text" class="" value="${enddate}" id="enddate" name="enddate" placeholder="End Date" >
-        		
-        		</div>
-        		<div style="float: left; width: 25%;">
-                                 
-                    <input type="text" class="" value="${minTempTheshold}" id="minTempTheshold" name="minTempTheshold"  placeholder="Min Temp Threshold">               
-                    <input type="text" class="" value="${maxTempTheshold}" id="maxTempTheshold" name="maxTempTheshold"  placeholder="Max Temp Threshold">
+                <div class="clearfix full-height">
+                    <h2 class="small-heading">DEGREE DAYS</h2>
+                    <div class="row">
+                        <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
+                            <div style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto; margin-top: 20px">
+								<form:form action="${pageContext.request.contextPath}/degreedays#degreedays" method="post" name="factors">
+						        	<div class="">
+						        		<div style="float: left; width: 25%;">
+						        			<input type="text" class="" value="${startdate}" id="startdate" name="startdate" placeholder="Start Date">
+						        			<input type="text" class="" value="${enddate}" id="enddate" name="enddate" placeholder="End Date" >
+						        		
+						        		</div>
+						        		<div style="float: left; width: 25%;">
+						                                 
+						                    <input type="text" class="" value="${minTempTheshold}" id="minTempTheshold" name="minTempTheshold"  placeholder="Min Temp Threshold">               
+						                    <input type="text" class="" value="${maxTempTheshold}" id="maxTempTheshold" name="maxTempTheshold"  placeholder="Max Temp Threshold">
+						                </div>
+						                                    
+						                <div style="float: left; width: 25%;">
+						                    <input type="text" class="" value="${minHumTheshold}" id="minHumTheshold" name="minHumTheshold"  placeholder="Min Hum Threshold">
+						                    <input type="text" class="" value="${maxWindTheshold}" id="maxWindTheshold" name="maxWindTheshold"  placeholder="Max Wind Threshold">
+						                                    
+						                </div>
+						                <div style="float: left; width: 25%;">
+						                    <button type="submit" class="">Search</button>
+						                </div>
+						             </div>                    
+						                
+										<br><br>            	                 
+						        </form:form>
+							</div>
+							<div id="container" style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto"></div>
+
+                            
+                        </div>
+                    </div>
                 </div>
-                                    
-                <div style="float: left; width: 25%;">
-                    <input type="text" class="" value="${minHumTheshold}" id="minHumTheshold" name="minHumTheshold"  placeholder="Min Hum Threshold">
-                    <input type="text" class="" value="${maxWindTheshold}" id="maxWindTheshold" name="maxWindTheshold"  placeholder="Max Wind Threshold">
-                                    
-                </div>
-                <div style="float: left; width: 25%;">
-                    <button type="submit" class="">Search</button>
-                </div>
-             </div>                    
-                            	                 
-        </form:form>
-	</div>
-	<div id="container" style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto"></div>
-		
-	<!-- Bootstrap Core JavaScript -->
-    <script src="resources/js/bootstrap.min.js"></script>
-
-    <!-- Plugin JavaScript -->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
-    <script src="resources/js/classie.js"></script>
-    <script src="resources/js/cbpAnimatedHeader.js"></script>
-
-    <!-- Contact Form JavaScript -->
-    <script src="resources/js/jqBootstrapValidation.js"></script>
-
-    <!-- Custom Theme JavaScript -->
-    <script src="resources/js/agency.js"></script>
-
+       
 
                 <!-- Footer -->
                 
@@ -952,16 +1079,11 @@
                         <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
                             <div class="row">
                                 <div class="col-md-6 col-sm-12 col-xs-12">
-                                    <p class="copyright">Copyright &copy; 2015 
-                                        <a href="#">Your Company</a>
+                                    <p class="copyright">Copyright &copy; 2016 
+                                        <a href="HTTP://www.delicato.com">Delicato</a>
                                     </p>
                                 </div>
 
-                                <div class="col-md-6 col-sm-12 col-xs-12">
-                                    <p class="author">
-                                        Theme by <a href="https://themewagon.com/" target="_blank">ThemeWagon</a>
-                                    </p>
-                                </div>
                             </div>      
                         </div>
                     </div>
@@ -982,7 +1104,7 @@
                 <div class="mask">
                 </div>
                 <div class="main-heading">
-                    <h1>contact</h1>
+                    <h1>Predictions</h1>
                 </div>
             </div>
             
@@ -993,66 +1115,20 @@
                 <!--( A ) Contact Form -->
                 
                 <div class="clearfix full-height">
-                    <h2 class="small-heading">COME IN TOUCH</h2>
+                    <h2 class="small-heading">Know your future</h2>
                     <div class="row">
                         <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
                             <div class="contact-info">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="data">
-                                            <i class="fa fa-map-marker"></i>
-                                            <span>
-                                                House -3, Road-2, Block - F, <br>
-                                                 Akhalia Ghat R/A, Sylhet. <br>
-                                            </span>
-                                        </div>
-
-                                        <div class="data">
-                                            <i class="fa fa-envelope"></i>
-                                            <span>
-                                                hello@boots4.com
-                                            </span>
-                                        </div>
-
-                                        <div class="data">
-                                            <i class="fa fa-phone"></i>
-                                            <span>
-                                                +880 12345 - 67890
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
+                                
+                                    
+                                   
                                         <div id="map-canvas"></div>
-                                    </div>
-                                </div>
+                                    
+                               
                                     
                             </div>
 
-                            <div class="row">
-                                <form  id="contactForm" class="contact-form" method="post" action="php/contact.php">
-                                    
-                                    <div class="col-md-6 col-sm-6">
-                                        <div class="form-group">
-                                            <input  name="name" type="text" class="form-control" id="name" required="required" placeholder="  Name">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 col-sm-6">
-                                        <div class="form-group">
-                                            <input name="email" type="email" class="form-control" id="email" required="required" placeholder="  Email">
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-12 col-sm-12">
-                                        <textarea name="massage" type="text" class="form-control" id="message" rows="5" required="required" placeholder="  Message"></textarea>
-                                    </div>
-                                    
-                                    <div class="col-md-4 col-xs-12">
-                                        <input type="submit" id="cfsubmit" class="btn btn-send" value="Say Hello">
-                                    </div>
-                                    <div id="contactFormResponse" class="col-md-8 col-xs-12"></div>
-                                </form>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -1064,16 +1140,11 @@
                         <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
                             <div class="row">
                                 <div class="col-md-6 col-sm-12 col-xs-12">
-                                    <p class="copyright">Copyright &copy; 2015 
-                                        <a href="#">Your Company</a>
+                                    <p class="copyright">Copyright &copy; 2016 
+                                        <a href="http://www.delicato.com">Delicato</a>
                                     </p>
                                 </div>
 
-                                <div class="col-md-6 col-sm-12 col-xs-12">
-                                    <p class="author">
-                                        Theme by <a href="https://themewagon.com/" target="_blank">ThemeWagon</a>
-                                    </p>
-                                </div>
                             </div>      
                         </div>
                     </div>

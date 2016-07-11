@@ -1,5 +1,9 @@
 package com.delicato.visual.model;
 
+import java.util.Date;
+
+
+
 public class Factors {
     
 	private String startdate;
@@ -8,12 +12,18 @@ public class Factors {
 	private String maxTempTheshold;
 	private String minHumTheshold;
 	private String maxWindTheshold;
-	
+	private Date givendate;
 	public String getStartdate() {
 		return startdate;
 	}
 	public void setStartdate(String startdate) {
 		this.startdate = startdate;
+	}
+	public Date getGivendate(){
+		return givendate;
+	}
+	public void setGivendate(Date givendate) {
+		this.givendate = givendate;
 	}
 	public String getEnddate() {
 		return enddate;
