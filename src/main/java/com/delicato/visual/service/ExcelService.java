@@ -20,7 +20,7 @@ public class ExcelService {
 	String rootPath =System.getProperty("user.dir");
 	String filePath = rootPath+"/src/main/webapp/";
 
-	public void writeToXls(Date date, Double degree )
+	public void writeToXls(String date, Double degree )
 	{
 			try {
 				System.out.println("inside csv--->");
@@ -56,7 +56,7 @@ public class ExcelService {
 				cellStyle.setDataFormat(
 				createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
 				
-				cell1.setCellValue((Date) date);
+				cell1.setCellValue(date);
 				cell1.setCellStyle(cellStyle);
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
@@ -69,7 +69,7 @@ public class ExcelService {
 		}
 	}
 	
-	public void writeToXlsCimisFirstGraph(Date date, double airtemp, double dewpoint, double relhum, double soiltemp )
+	public void writeToXlsCimisFirstGraph(String date, double airtemp, double dewpoint, double windspeed, double vappres, double soiltemp )
 	{
 			try {
 				HSSFWorkbook wb = null;
@@ -80,6 +80,7 @@ public class ExcelService {
 				HSSFCell cell3 = null;
 				HSSFCell cell4 = null;
 				HSSFCell cell5 = null;
+				HSSFCell cell6 = null;
 				File file = new File(filePath+"cimis1.xls");
 				if(file.exists()){
 					InputStream inp = new FileInputStream(file);
@@ -99,9 +100,11 @@ public class ExcelService {
 					 cell3 = row.createCell(2);
 					 cell3.setCellValue("dewpoint");
 					 cell4 = row.createCell(3);
-					 cell4.setCellValue("relhum");
+					 cell4.setCellValue("windspeed");
 					 cell5 = row.createCell(4);
-					 cell5.setCellValue("soiltemp");
+					 cell5.setCellValue("vappres");
+					 cell6 = row.createCell(5);
+					 cell6.setCellValue("soiltemp");
 				} 
 				
 				row = sheet.createRow(sheet.getLastRowNum()+1);
@@ -110,27 +113,31 @@ public class ExcelService {
 				cell3 = row.createCell(2);
 				cell4 = row.createCell(3);
 				cell5 = row.createCell(4);
+				cell6 = row.createCell(5);
 				//System.out.println("---------------->"+date);
 				HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
 				
 				CreationHelper createHelper = wb.getCreationHelper();
 				cellStyle.setDataFormat(
 				    createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
-				cell1.setCellValue((Date) date);
+				cell1.setCellValue(date);
 				cell1.setCellStyle(cellStyle);
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell2.setCellValue(airtemp);
-				System.out.println("------------------->"+airtemp);
+				System.out.println("air------------------->"+airtemp);
 				cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell3.setCellValue(dewpoint);
-				System.out.println("------------------->"+dewpoint);
+				System.out.println("dew------------------->"+dewpoint);
 				cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell4.setCellValue(relhum);
-				System.out.println("------------------->"+relhum);
+				cell4.setCellValue(windspeed);
+				System.out.println("wind------------------->"+windspeed);
 				cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell5.setCellValue(soiltemp);
-				System.out.println("------------------->"+soiltemp);
+				cell5.setCellValue(vappres);
+				System.out.println("vap------------------->"+vappres);
+				cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell6.setCellValue(soiltemp);
+				System.out.println("soil------------------->"+soiltemp);
 				// Write the output to a file
 				FileOutputStream fileOut = new FileOutputStream(filePath+"cimis1.xls");
 				wb.write(fileOut);
@@ -140,7 +147,7 @@ public class ExcelService {
 		}
 	}
 	
-	public void writeToXlsCimisSecGraph(Date date, double solrad, double vappres, double windspeed, double winddir )
+	public void writeToXlsCimisSecGraph(String date, double relhum, double winddir )
 	{
 			try {
 				
@@ -150,8 +157,7 @@ public class ExcelService {
 				HSSFCell cell1 = null;
 				HSSFCell cell2 = null;
 				HSSFCell cell3 = null;
-				HSSFCell cell4 = null;
-				HSSFCell cell5 = null;
+				
 				File file = new File(filePath+"cimis3.xls");
 				if(file.exists()){
 					InputStream inp = new FileInputStream(file);
@@ -166,41 +172,32 @@ public class ExcelService {
 					 cell1 = row.createCell(0);
 					 cell1.setCellValue("Date");
 					 cell2 = row.createCell(1);
-					 cell2.setCellValue("solrad");
-					 cell3 = row.createCell(2);
-					 cell3.setCellValue("vappres");
-					 cell4 = row.createCell(3);
-					 cell4.setCellValue("windspeed");
-					 cell5 = row.createCell(4);
-					 cell5.setCellValue("winddir");
+					 cell2.setCellValue("relhum");
+					 
+					 cell3 = row.createCell(4);
+					 cell3.setCellValue("winddir");
 				} 
 				
 				row = sheet.createRow(sheet.getLastRowNum()+1);
 				cell1 = row.createCell(0);
 				cell2 = row.createCell(1);
 				cell3 = row.createCell(2);
-				cell4 = row.createCell(3);
-				cell5 = row.createCell(4);
+				
 				HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
 				
 				CreationHelper createHelper = wb.getCreationHelper();
 				cellStyle.setDataFormat(
 				createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
-				cell1.setCellValue((Date) date);
+				cell1.setCellValue(date);
 				cell1.setCellStyle(cellStyle);
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell2.setCellValue(solrad);
-				System.out.println("------------------->"+solrad);
+				cell2.setCellValue(relhum);
+				System.out.println("rel------------------->"+relhum);
+				
 				cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell3.setCellValue(vappres);
-				System.out.println("------------------->"+vappres);
-				cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell4.setCellValue(windspeed);
-				System.out.println("------------------->"+windspeed);
-				cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell5.setCellValue(winddir);
-				System.out.println("------------------->"+winddir);
+				cell3.setCellValue(winddir);
+				System.out.println("dir------------------->"+winddir);
 				FileOutputStream fileOut = new FileOutputStream(filePath+"cimis3.xls");
 				wb.write(fileOut);
 				fileOut.close();
@@ -209,7 +206,7 @@ public class ExcelService {
 		}
 	}
 	
-	public void writeToCsv2(Date date, double airtemp, double dewpoint, double relhum, double soiltemp)
+	public void writeToCsv2(String date, double airtemp, double dewpoint, double windspeed, double vappres, double soiltemp)
 	{
 			try {
 				System.out.println("inside csv--->");
@@ -222,6 +219,7 @@ public class ExcelService {
 				HSSFCell cell3 = null;
 				HSSFCell cell4 = null;
 				HSSFCell cell5 = null;
+				HSSFCell cell6 = null;
 				File file = new File(filePath+"cimis2.xls");
 				if(file.exists()){
 					InputStream inp = new FileInputStream(file);
@@ -241,9 +239,11 @@ public class ExcelService {
 					 cell3 = row.createCell(2);
 					 cell3.setCellValue("dewpoint");
 					 cell4 = row.createCell(3);
-					 cell4.setCellValue("relhum");
+					 cell4.setCellValue("windspeed");
 					 cell5 = row.createCell(4);
-					 cell5.setCellValue("soiltemp");
+					 cell5.setCellValue("vappres");
+					 cell6 = row.createCell(5);
+					 cell6.setCellValue("soiltemp");
 				} 
 				
 				row = sheet.createRow(sheet.getLastRowNum()+1);
@@ -252,13 +252,16 @@ public class ExcelService {
 				cell3 = row.createCell(2);
 				cell4 = row.createCell(3);
 				cell5 = row.createCell(4);
-				HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
+				cell6=  row.createCell(5);
+				//HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
 				
-				CreationHelper createHelper = wb.getCreationHelper();
-				cellStyle.setDataFormat(
-				    createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
-				cell1.setCellValue((Date) date);
-				cell1.setCellStyle(cellStyle);
+				//CreationHelper createHelper = wb.getCreationHelper();
+				//cellStyle.setDataFormat(
+				    //createHelper.createDataFormat().getFormat("##"));
+				int hour = cell1.getRowIndex();
+				cell1.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell1.setCellValue(hour);
+				//cell1.setCellStyle(cellStyle);
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell2.setCellValue(airtemp);
@@ -267,12 +270,75 @@ public class ExcelService {
 				cell3.setCellValue(dewpoint);
 				System.out.println("------------------->"+dewpoint);
 				cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell4.setCellValue(relhum);
-				System.out.println("------------------->"+relhum);
+				cell4.setCellValue(windspeed);
+				System.out.println("------------------->"+windspeed);
 				cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell5.setCellValue(soiltemp);
+				cell5.setCellValue(vappres);
+				System.out.println("------------------->"+vappres);
+				cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell6.setCellValue(soiltemp);
 				System.out.println("------------------->"+soiltemp);
 				FileOutputStream fileOut = new FileOutputStream(filePath+"cimis2.xls");
+				wb.write(fileOut);
+				fileOut.close();
+			}  catch (IOException e) {
+				e.printStackTrace();
+			}
+		  }
+	public void writeToCsv(String date, double relhum, double winddir)
+	{
+			try {
+				System.out.println("inside csv--->");
+				
+				HSSFWorkbook wb = null;
+				HSSFSheet sheet = null;
+				HSSFRow row = null;
+				HSSFCell cell1 = null;
+				HSSFCell cell2 = null;
+				HSSFCell cell3 = null;
+				
+				File file = new File(filePath+"cimis4.xls");
+				if(file.exists()){
+					InputStream inp = new FileInputStream(file);
+					 
+					wb = new HSSFWorkbook(inp);
+					sheet = wb.getSheetAt(0);
+					
+					
+				}else{
+					wb = new HSSFWorkbook();
+			         sheet = wb.createSheet();
+			         row = sheet.createRow(0);
+					 cell1 = row.createCell(0);
+					 cell1.setCellValue("Date");
+					 cell2 = row.createCell(1);
+					 cell2.setCellValue("relhum");
+					 
+					 cell3 = row.createCell(2);
+					 cell3.setCellValue("winddir");
+				} 
+				
+				row = sheet.createRow(sheet.getLastRowNum()+1);
+				cell1 = row.createCell(0);
+				cell2 = row.createCell(1);
+				cell3 = row.createCell(2);
+				
+				HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
+				
+				CreationHelper createHelper = wb.getCreationHelper();
+				cellStyle.setDataFormat(
+				    createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
+				cell1.setCellValue(date);
+				cell1.setCellStyle(cellStyle);
+				
+				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell2.setCellValue(relhum);
+				System.out.println("------------------->"+relhum);
+				
+				cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell3.setCellValue(winddir);
+				System.out.println("------------------->"+winddir);
+				FileOutputStream fileOut = new FileOutputStream(filePath+"cimis4.xls");
 				wb.write(fileOut);
 				fileOut.close();
 			}  catch (IOException e) {

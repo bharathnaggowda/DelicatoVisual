@@ -29,6 +29,8 @@ public class DataService {
 	ExcelService xlsService = new ExcelService();
 	CsvService csvService = new CsvService();
 	
+	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+	
 	public void getCimisData(Date sDate, Date eDate, int minTempTheshold, int maxTempTheshold, int minWindTheshold, int maxWindTheshold){
 			
 		File inputFile = new File(filePath+"degreedays.xls");
@@ -41,7 +43,7 @@ public class DataService {
 			}
 			
 			BasicDBObject getQuery = new BasicDBObject();
-		    getQuery.put("_id", new BasicDBObject("$gt", sDate).append("$lt", eDate));
+		    getQuery.put("_id", new BasicDBObject("$gte", sDate).append("$lte", eDate));
 			
 			final int lThreshold = ((minTempTheshold - 32) * 5) / 9;
 			final int hThreshold = ((maxTempTheshold - 32) * 5) / 9;
@@ -58,7 +60,7 @@ public class DataService {
 			        String date = "";
 			        Document a = (Document) document.get("hourlydata");
 			        ArrayList contents = (ArrayList) a.get("Records");
-			        double degree = 0;
+			        double degree = 0.00000001;
 			        int daysCount = 0;
 			        for(int i=0; i<contents.size(); i++){
 			        	//System.out.println(contents.get(i));
@@ -94,13 +96,14 @@ public class DataService {
 			        System.out.println(degree);
 			        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 					Date d = null;
+					String dat = null;
 			        try {
 						d = dateFormat.parse(date);
-						//System.out.println("date---------->"+d);
+						dat = sdf.format(d);
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
-			        xlsService.writeToXls(d, degree);
+			        xlsService.writeToXls(dat, degree);
 			    }
 			});
 			
@@ -108,7 +111,7 @@ public class DataService {
 			System.out.println("completed");
 		}
 	
-	public void getCimisDataForGraphs(Date sDate, Date eDate, double airtemp, double dewpoint, double relhum, double soiltemp,double solrad, double vappres, double windspeed, double winddir ){
+	public void getCimisDataForGraphs(Date sDate, Date eDate, double airtemp, double dewpoint, double relhum, double soiltemp, double vappres, double windspeed, double winddir ){
 		
 		File inputFile = new File(filePath+"cimis1.xls");
 		File outputFile = new File(filePath+"cimis1.csv");
@@ -129,7 +132,7 @@ public class DataService {
 			}
 			
 			BasicDBObject getQuery = new BasicDBObject();
-		    getQuery.put("_id", new BasicDBObject("$gt", sDate).append("$lt", eDate));
+		    getQuery.put("_id", new BasicDBObject("$gte", sDate).append("$lte", eDate));
 
 			FindIterable<Document> cursor = cimisCollection.find(getQuery);
 			
@@ -140,7 +143,7 @@ public class DataService {
 			        String date = "";
 			        Document a = (Document) document.get("hourlydata");
 			        ArrayList contents = (ArrayList) a.get("Records");
-			        double airtemp1=0, dewpoint1=0, relhum1=0, soiltemp1=0, solrad1=0, vappres1=0, windspeed1=0, winddir1=0;
+			        double airtemp1=0, dewpoint1=0, relhum1=0, soiltemp1=0, vappres1=0, windspeed1=0, winddir1=0;
 			        for(int i=0; i<contents.size(); i++){
 			        	//System.out.println(contents.get(i));
 				        Document doc = (Document) contents.get(i);
@@ -149,18 +152,18 @@ public class DataService {
 				        
 				        Document relhum = (Document) doc.get("HlyRelHum");
 				        Document soiltemp=(Document) doc.get("HlySoilTmp");
-				        Document solrad = (Document) doc.get("HlySolRad");
+				        //Document solrad = (Document) doc.get("HlySolRad");
 				        Document vappres = (Document) doc.get("HlyVapPres");
 				        
 				        Document windspeed = (Document) doc.get("HlyWindSpd");
 				        Document winddir=(Document) doc.get("HlyWindDir");
 				       // System.out.println(airtemp);
 				        date = (String) doc.get("Date");
-				        System.out.println("airtemp--> "+airtemp.get("Value")+"--"+"dewpoint--> "+dewpoint.get("Value")+"--"+"relhum--> "+relhum.get("Value")+"--"+"soiltemp--> "+soiltemp.get("Value"));
+				        System.out.println("airtemp--> "+airtemp.get("Value")+"--"+"dewpoint--> "+dewpoint.get("Value")+"--"+"windspeed--> "+windspeed.get("Value")+"--"+"vappres--> "+vappres.get("Value")+"--"+"soiltemp-->"+soiltemp.get("Value")+"relhum--> "+relhum.get("Value")+"--"+"winddir--> "+winddir.get("Value")+"--");
 				       if(airtemp.get("Value") != null && airtemp.get("Value") != "" &&
 				        		dewpoint.get("Value") != null && dewpoint.get("Value") != "" &&
 				        				relhum.get("Value") != null && relhum.get("Value") != "" &&
-				        				soiltemp.get("Value") != null && soiltemp.get("Value") != "" && solrad.get("Value") != null && solrad.get("Value") != "" &&
+				        				soiltemp.get("Value") != null && soiltemp.get("Value") != "" && 
 					    		   vappres.get("Value") != null && vappres.get("Value") != "" &&
 					    				   windspeed.get("Value") != null && windspeed.get("Value") != "" &&
 					    						   winddir.get("Value") != null && winddir.get("Value") != ""){
@@ -169,12 +172,12 @@ public class DataService {
 				        	Double dewpointValue = Double.parseDouble((String) dewpoint.get("Value"));
 				        	Double relhumValue = Double.parseDouble((String) relhum.get("Value"));
 				        	Double soiltempValue = Double.parseDouble((String) soiltemp.get("Value"));
-				        	Double solradvalue = Double.parseDouble((String) solrad.get("Value"));
+				        	//Double solradvalue = Double.parseDouble((String) solrad.get("Value"));
 				        	Double vappresValue = Double.parseDouble((String)vappres.get("Value"));
 				        	Double windspeedValue = Double.parseDouble((String) windspeed.get("Value"));
 				        	Double winddirValue = Double.parseDouble((String) winddir.get("Value"));
 				        	
-				        	solrad1= solradvalue;
+				        	//solrad1= solradvalue;
 				        	//System.out.println("airtemp"+airtemp1);
 				        	vappres1=vappresValue;
 				        	windspeed1=windspeedValue;
@@ -189,13 +192,15 @@ public class DataService {
 			        }
 			        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 					Date d = null;
+					String dat = null;
 			        try {
 						d = dateFormat.parse(date);
+						dat = sdf.format(d);
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
-			        xlsService.writeToXlsCimisFirstGraph(d, airtemp1,dewpoint1,relhum1,soiltemp1 );
-			        xlsService.writeToXlsCimisSecGraph(d, solrad1,vappres1,windspeed1,winddir1 );
+			        xlsService.writeToXlsCimisFirstGraph(dat, airtemp1,dewpoint1,vappres1,windspeed1,soiltemp1 );
+			        xlsService.writeToXlsCimisSecGraph(dat,relhum1 ,winddir1 );
 			        
 			    }
 			});
@@ -205,16 +210,24 @@ public class DataService {
 			System.out.println("completed");
 	}
 	
-	public void getCimisDataForSubGraph(double airtemp, double dewpoint, double relhum, double soiltemp, Date gDate ){
+	public void getCimisDataForSubGraph(double airtemp, double dewpoint, double relhum, double soiltemp, double vappres, double windspeed, double winddir, Date gDate ){
 		
 		File inputFile = new File(rootPath+"/src/main/webapp/cimis2.xls");
 	    File outputFile = new File(rootPath+"/src/main/webapp/cimis2.csv");
+		File inputFile1 = new File(rootPath+"/src/main/webapp/cimis4.xls");
+	    File outputFile1 = new File(rootPath+"/src/main/webapp/cimis4.csv");
 	   
 			if(inputFile.exists()){
 				inputFile.delete();
 			}
 			if(outputFile.exists()){
 				outputFile.delete();
+			}
+			if(inputFile1.exists()){
+				inputFile1.delete();
+			}
+			if(outputFile1.exists()){
+				outputFile1.delete();
 			}
 			
 			BasicDBObject getQuery = new BasicDBObject();
@@ -230,7 +243,7 @@ public class DataService {
 			        String date = "";
 			        Document a = (Document) document.get("hourlydata");
 			        ArrayList contents = (ArrayList) a.get("Records");
-			        double airtemp1=0, dewpoint1=0, relhum1=0, soiltemp1=0;
+			        double airtemp1=0, dewpoint1=0, relhum1=0, soiltemp1=0,  vappres1=0, windspeed1=0, winddir1=0;
 			     
 			        for(int i=0; i<contents.size(); i++){
 			        	//System.out.println(contents.get(i));
@@ -240,9 +253,14 @@ public class DataService {
 				        
 				        Document relhum = (Document) doc.get("HlyRelHum");
 				        Document soiltemp=(Document) doc.get("HlySoilTmp");
+				        //Document solrad = (Document) doc.get("HlySolRad");
+				        Document vappres = (Document) doc.get("HlyVapPres");
+				        
+				        Document windspeed = (Document) doc.get("HlyWindSpd");
+				        Document winddir=(Document) doc.get("HlyWindDir");
 				        date = (String) doc.get("Date");
 				        
-				        System.out.println("airtemp--> "+airtemp.get("Value")+"--"+"dewpoint--> "+dewpoint.get("Value")+"--"+"relhum--> "+relhum.get("Value")+"--"+"soiltemp--> "+soiltemp.get("Value"));
+				        System.out.println("airtemp--> "+airtemp.get("Value")+"--"+"dewpoint--> "+dewpoint.get("Value")+"--"+"windspeed--> "+windspeed.get("Value")+"--"+"vappres--> "+vappres.get("Value")+"--"+"relhum--> "+relhum.get("Value")+"--"+"soiltemp--> "+soiltemp.get("Value")+"winddir--> "+winddir.get("Value"));
 				       if(airtemp.get("Value") != null && airtemp.get("Value") != "" &&
 				        		dewpoint.get("Value") != null && dewpoint.get("Value") != "" &&
 				        				relhum.get("Value") != null && relhum.get("Value") != "" &&
@@ -252,27 +270,41 @@ public class DataService {
 				        	Double dewpointValue = Double.parseDouble((String) dewpoint.get("Value"));
 				        	Double relhumValue = Double.parseDouble((String) relhum.get("Value"));
 				        	Double soiltempValue = Double.parseDouble((String) soiltemp.get("Value"));
+				        	//Double solradvalue = Double.parseDouble((String) solrad.get("Value"));
+				        	Double vappresValue = Double.parseDouble((String)vappres.get("Value"));
+				        	Double windspeedValue = Double.parseDouble((String) windspeed.get("Value"));
+				        	Double winddirValue = Double.parseDouble((String) winddir.get("Value"));
+				        	
 				        	airtemp1= airtempvalue;
 				        	dewpoint1=dewpointValue;
 				        	relhum1=relhumValue;
 				        	soiltemp1=soiltempValue;
+				        	//solrad1= solradvalue;
+				        	//System.out.println("airtemp"+airtemp1);
+				        	vappres1=vappresValue;
+				        	windspeed1=windspeedValue;
+				        	winddir1=winddirValue;
 				        	
 				        }
 				       
 				        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 						Date d = null;
+						String dat = null;
 				        try {
 							d = dateFormat.parse(date);
+							dat = sdf.format(d);
 							System.out.println("sssssssssssssssssssdate---------->"+d);
 						} catch (ParseException e) {
 							e.printStackTrace();
 						}
-				        xlsService.writeToCsv2(d, airtemp1,dewpoint1,relhum1,soiltemp1 );
+				        xlsService.writeToCsv2(dat, airtemp1,dewpoint1,vappres1,windspeed1,soiltemp1 );
+				        xlsService.writeToCsv(dat,relhum1,winddir1 );
 			        }
 			    }
 			});
 			
 			csvService.xlsToCsv(inputFile, outputFile);
+			csvService.xlsToCsv(inputFile1, outputFile1);
 			System.out.println("completed2");
 		}
 }

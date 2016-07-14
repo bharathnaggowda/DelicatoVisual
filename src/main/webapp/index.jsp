@@ -125,14 +125,14 @@
 				//alert(date);
 
 			//chart to be displayed when date is selected
-			var options1 = {
+			var hourly1 = {
 				chart: {
 					renderTo: 'report',
 					type:'spline'
 					
 				},
 				title: {
-					text: 'Temparature analysis'
+					text: 'Hourly Graph'
 				},
 				xAxis: {
 				        
@@ -146,7 +146,7 @@
 				 
 				yAxis: {
 					title: {
-						text: 'Temparature'
+						text: 'Units'
 					}
 				},
 				series: []
@@ -162,9 +162,9 @@
 					if (lineNo==0) {
 
             			$.each(items, function(itemNo, item) {
-								if(itemNo>0&& itemNo<5){
+								if(itemNo>0&& itemNo<6){
 	                			
-	                    		options1.series.push({
+	                    		hourly1.series.push({
 	                        	name: item,
 	                        	data: []
 	                   			});
@@ -176,23 +176,27 @@
 
             			$.each(items, function(itemNo, item) {
                 			if (itemNo === 0) { /* first item containes year */
-                    			options1.xAxis.categories.push(item);
+                    			hourly1.xAxis.categories.push(item);
 
                 			} 
                 			else if (itemNo===1) { /* each other value for series  + parsing prevent nulls*/
-                    			options1.series[itemNo-1].data.push(parseFloat(item));
+                    			hourly1.series[itemNo-1].data.push(parseInt(item));
 
                 			}
                 			else if (itemNo===2) { /* each other value for series  + parsing prevent nulls*/
-                    			options1.series[itemNo - 1].data.push(parseFloat(item));
+                    			hourly1.series[itemNo - 1].data.push(parseFloat(item));
 
                 			}
                 			else if (itemNo===3) { /* each other value for series  + parsing prevent nulls*/
-                    			options1.series[itemNo - 1].data.push(parseFloat(item));
+                    			hourly1.series[itemNo - 1].data.push(parseFloat(item));
 
                 			}
-                			else if (itemNo==4) { /* each other value for series  + parsing prevent nulls*/
-                    			options1.series[itemNo - 1].data.push(parseFloat(item));
+                			else if (itemNo===4) { /* each other value for series  + parsing prevent nulls*/
+                    			hourly1.series[itemNo - 1].data.push(parseFloat(item));
+
+                			}
+                			else if (itemNo===5) { /* each other value for series  + parsing prevent nulls*/
+                    			hourly1.series[itemNo - 1].data.push(parseFloat(item));
 
                 			}
             			});
@@ -201,18 +205,18 @@
 									
 				});
 				
-				var chart = new Highcharts.Chart(options1);
+				var chart = new Highcharts.Chart(hourly1);
 			});
 //}
 			//intial charts with all categories
-			var options = {
+			var graph1 = {
 				chart: {
 					renderTo: 'cimiscontainer',
 					type:'spline'
 					
 				},
 				title: {
-					text: 'cimisanalysis'
+					text: 'Daily Graph'
 				},
 				xAxis: {
 				        
@@ -240,8 +244,8 @@
                                 });*/
 								//to send date selected
 								//sravya(this.series.xAxis.categories[this.x]);
-                                var chart = new Highcharts.Chart(options1);
-								kavya(this.series.xAxis.categories[this.x]);
+                                var chart = new Highcharts.Chart(hourly1);
+								senddate(this.series.xAxis.categories[this.x]);
 								
 								/* }
                             else if(this.series.name=='pressure'){
@@ -268,7 +272,7 @@
 
 				yAxis: {
 					title: {
-						text: 'Temparature'
+						text: 'Units'
 					}
 				},
 				series: []
@@ -282,9 +286,9 @@
 					var items = line.split(',');
 					if (lineNo === 0) {
             			$.each(items, function(itemNo, item) {
-	                		if(itemNo>0&& itemNo<5){
+	                		if(itemNo>0&& itemNo<6){
 	                			
-	                    		options.series.push({
+	                    		graph1.series.push({
 	                        	name: item,
 	                        	data: []
 	                   			});
@@ -295,28 +299,33 @@
         			else {
             			$.each(items, function(itemNo, item) {
                 			if (itemNo === 0) { /* first item containes year */
-                    			options.xAxis.categories.push(item);
+                    			graph1.xAxis.categories.push(item);
 
                 			} 
                 			else if (itemNo===1) { /* each other value for series  + parsing prevent nulls*/
-                    			options.series[itemNo-1].data.push(parseFloat(item));
+                    			graph1.series[itemNo-1].data.push(parseFloat(item));
 
                 			}
                 			else if (itemNo===2) { /* each other value for series  + parsing prevent nulls*/
-                    			options.series[itemNo - 1].data.push(parseFloat(item));
+                    			graph1.series[itemNo - 1].data.push(parseFloat(item));
 
                 			}
                 			else if (itemNo===3) { /* each other value for series  + parsing prevent nulls*/
-                    			options.series[itemNo - 1].data.push(parseFloat(item));
+                    			graph1.series[itemNo - 1].data.push(parseFloat(item));
 
                 			}
                 			else if (itemNo==4) { /* each other value for series  + parsing prevent nulls*/
-                    			options.series[itemNo - 1].data.push(parseFloat(item));
+                    			graph1.series[itemNo - 1].data.push(parseFloat(item));
+
+                			}
+                			else if (itemNo==5) { /* each other value for series  + parsing prevent nulls*/
+                    			graph1.series[itemNo - 1].data.push(parseFloat(item));
 
                 			}
 
+
                 			/*else if (item == "null") { /* adding nulls 
-                    			options.series[itemNo - 1].data.push(null);
+                    			graph1graph1]].series[itemNo - 1].data.push(null);
                 			}*/
             			});
 
@@ -324,16 +333,87 @@
 									
 				});
 				
-				var chart = new Highcharts.Chart(options);
+				var chart = new Highcharts.Chart(graph1);
 			});	
-			var options2 = {
+			var hourly2 = {
+					chart: {
+						renderTo: 'report1',
+						type:'spline'
+						
+					},
+					title: {
+						text: 'Hourly Graph'
+					},
+					xAxis: {
+					        
+						categories: []
+					},
+					tooltip: {
+	                shared: true,
+	                crosshairs: true,
+	              
+	            },
+					 
+					yAxis: {
+						title: {
+							text: 'Units'
+						}
+					},
+					series: []
+				};	
+				
+				$.get('cimis4.csv', function(data) {
+					// Split the lines
+					var lines = data.split('\n');
+						
+					$.each(lines, function(lineNo, line) {
+						var items = line.split(',');
+
+						if (lineNo==0) {
+
+	            			$.each(items, function(itemNo, item) {
+									if(itemNo>0&& itemNo<3){
+		                			
+		                    		hourly2.series.push({
+		                        	name: item,
+		                        	data: []
+		                   			});
+		                   			
+		                		}
+	            			});
+	        			} 
+	        			else {
+
+	            			$.each(items, function(itemNo, item) {
+	                			if (itemNo === 0) { /* first item containes year */
+	                    			hourly2.xAxis.categories.push(item);
+
+	                			} 
+	                			else if (itemNo===1) { /* each other value for series  + parsing prevent nulls*/
+	                    			hourly2.series[itemNo-1].data.push(parseFloat(item));
+
+	                			}
+	                			else if (itemNo===2) { /* each other value for series  + parsing prevent nulls*/
+	                    			hourly2.series[itemNo - 1].data.push(parseFloat(item));
+
+	                			}
+	                			
+	            			});
+
+	        			}
+										
+					});
+					
+					var chart = new Highcharts.Chart(hourly2);
+				});
+			var graph2 = {
 				chart: {
 					renderTo: 'cimiscontainer2',
 					type:'spline'
 					
 				},
 				title: {
-					text: 'cimisanalysis'
+					text: 'Daily Graph'
 				},
 				xAxis: {
 				        
@@ -361,8 +441,8 @@
                                 });*/
 								//to send date selected
 								//sravya(this.series.xAxis.categories[this.x]);
-                                var chart = new Highcharts.Chart(options1);
-								kavya(this.series.xAxis.categories[this.x]);
+                                var chart = new Highcharts.Chart(hourly2);
+								senddate(this.series.xAxis.categories[this.x]);
 								
 								/* }
                             else if(this.series.name=='pressure'){
@@ -389,7 +469,7 @@
 
 				yAxis: {
 					title: {
-						text: 'Temparature'
+						text: 'Units'
 					}
 				},
 				series: []
@@ -403,9 +483,9 @@
 					var items = line.split(',');
 					if (lineNo === 0) {
             			$.each(items, function(itemNo, item) {
-	                		if(itemNo>0&& itemNo<5){
+	                		if(itemNo>0&& itemNo<3){
 	                			
-	                    		options2.series.push({
+	                    		graph2.series.push({
 	                        	name: item,
 	                        	data: []
 	                   			});
@@ -416,25 +496,18 @@
         			else {
             			$.each(items, function(itemNo, item) {
                 			if (itemNo === 0) { /* first item containes year */
-                    			options2.xAxis.categories.push(item);
+                    			graph2.xAxis.categories.push(item);
 
                 			} 
                 			else if (itemNo===1) { /* each other value for series  + parsing prevent nulls*/
-                    			options2.series[itemNo-1].data.push(parseFloat(item));
+                    			graph2.series[itemNo-1].data.push(parseFloat(item));
 
                 			}
                 			else if (itemNo===2) { /* each other value for series  + parsing prevent nulls*/
-                    			options2.series[itemNo - 1].data.push(parseFloat(item));
+                    			graph2.series[itemNo - 1].data.push(parseFloat(item));
 
                 			}
-                			else if (itemNo===3) { /* each other value for series  + parsing prevent nulls*/
-                    			options2.series[itemNo - 1].data.push(parseFloat(item));
-
-                			}
-                			else if (itemNo==4) { /* each other value for series  + parsing prevent nulls*/
-                    			options2.series[itemNo - 1].data.push(parseFloat(item));
-
-                			}
+                			
 
                 			/*else if (item == "null") { /* adding nulls 
                     			options.series[itemNo - 1].data.push(null);
@@ -445,15 +518,14 @@
 									
 				});
 				
-				var chart = new Highcharts.Chart(options2);
+				var chart = new Highcharts.Chart(graph2);
 			});
-function kavya(id){
+function senddate(id){
 				
 				
 				//alert(id);
 				document.getElementById('givendate').value = id;
 
-				document.forms["factors"];
 				document.forms["hiddenfield"].submit();
 	
 				}
@@ -978,12 +1050,14 @@ function kavya(id){
 			   <div id="cimiscontainer2" style="width: 50%; height: 80%; margin: 0 auto;float: right"></div>
                             <br><br>
          </form:form>     
-         <form:form action="${pageContext.request.contextPath}/cimissubgraph#cimis" method="post" name="factors" id="hiddenfield">     
-			<div class="">
-			<input type="hidden" id="givendate" name="givendate"/> 
-			 </div>           
-                <div  id="report"></div>    
+         <form:form action="${pageContext.request.contextPath}/cimissubgraph#cimis" method="post" name="hiddenfield" id="hiddenfield">     
+			
+			
+			           
+                <div  id="report" style="width: 50%; height: 80%; margin: 0 auto; float:left"></div> 
+                <div  id="report1" style="width: 50%; height: 80%; margin: 0 auto; float:right"></div> 
                <br><br>
+               <input type="hidden" id="givendate" name="givendate"/> 
          </form:form>    
 			     	                 
        

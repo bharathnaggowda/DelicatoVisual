@@ -63,13 +63,13 @@ public class VisualController {
 		Date sDate = null;
 		Date eDate = null;
 
-		double airtemp=0, dewpoint=0, relhum=0, soiltemp=0, solrad=0, vappres=0, windspeed=0,winddir=0;
+		double airtemp=0, dewpoint=0, relhum=0, soiltemp=0,  vappres=0, windspeed=0,winddir=0;
 		
 		try {
 			sDate = format.parse(factors.getStartdate());
 			eDate = format.parse(factors.getEnddate());
 			
-			dataService.getCimisDataForGraphs(sDate, eDate, airtemp, dewpoint, relhum, soiltemp,solrad,vappres,windspeed,winddir);
+			dataService.getCimisDataForGraphs(sDate, eDate, airtemp, dewpoint, relhum, soiltemp, vappres, windspeed, winddir);
 			
 			model.addAttribute("startdate", factors.getStartdate());
 			model.addAttribute("enddate", factors.getEnddate());
@@ -85,11 +85,11 @@ public class VisualController {
 	public String cimisCimisSubGraph(Factors factors, Model model) throws ParseException 
 	{
 		Date gDate=null;
-		double airtemp=0, dewpoint=0, relhum=0, soiltemp=0;
+		double airtemp=0, dewpoint=0, relhum=0, soiltemp=0 ,vappres=0, windspeed=0,winddir=0;
 		
 		try {
 			gDate = factors.getGivendate();
-			dataService.getCimisDataForSubGraph(airtemp, dewpoint, relhum, soiltemp,gDate);
+			dataService.getCimisDataForSubGraph(airtemp, dewpoint, relhum, soiltemp, vappres, windspeed, winddir, gDate);
 			
 			model.addAttribute("givendate",factors.getGivendate());
 		} catch (Exception e) {
