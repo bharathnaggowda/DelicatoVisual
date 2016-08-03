@@ -323,13 +323,13 @@ public class ExcelService {
 				cell2 = row.createCell(1);
 				cell3 = row.createCell(2);
 				
-				HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
+				//HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
 				
-				CreationHelper createHelper = wb.getCreationHelper();
-				cellStyle.setDataFormat(
-				    createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
-				cell1.setCellValue(date);
-				cell1.setCellStyle(cellStyle);
+				//CreationHelper createHelper = wb.getCreationHelper();
+				//cellStyle.setDataFormat(
+				    //createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
+				cell1.setCellValue(cell1.getRowIndex());
+				//cell1.setCellStyle(cellStyle);
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell2.setCellValue(relhum);

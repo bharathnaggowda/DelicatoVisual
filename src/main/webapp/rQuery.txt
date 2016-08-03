@@ -1,0 +1,4 @@
+library(randomForest)
+model <- randomForest(rating ~ ., data = traindata)
+pred <- predict(model, newdata = preddata)
+pred

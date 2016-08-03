@@ -1,5 +1,8 @@
 package com.delicato.visual.config;
 
+import org.rosuda.REngine.Rserve.RConnection;
+import org.rosuda.REngine.Rserve.RserveException;
+
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
@@ -18,5 +21,17 @@ public class SpringMongoConfig {
     	}
 		return mongoClient;
     }
+    
+    public RConnection getRconnection(){
+		
+		RConnection con = null;
+		try {
+			con =  new RConnection("localhost", 6311);
+		} catch (RserveException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return con;
+	}
 
 }

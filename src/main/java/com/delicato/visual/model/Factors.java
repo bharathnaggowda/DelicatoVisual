@@ -13,6 +13,15 @@ public class Factors {
 	private String minHumTheshold;
 	private String maxWindTheshold;
 	private Date givendate;
+	private String block;
+	
+	
+	public String getBlock() {
+		return block;
+	}
+	public void setBlock(String block) {
+		this.block = block;
+	}
 	public String getStartdate() {
 		return startdate;
 	}

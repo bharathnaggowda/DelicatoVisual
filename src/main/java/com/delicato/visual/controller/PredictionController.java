@@ -36,7 +36,7 @@ public class PredictionController {
 	MongoCollection<Document> dyostemCollection = db.getCollection("dyostemdata");
 	MongoCollection<Document> ratingCollection = db.getCollection("VintageRating");
 
-	VisualController vc = new VisualController();
+	//VisualController vc = new VisualController();
 	final SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
 	SimpleDateFormat dFormat = new SimpleDateFormat("MM/dd/yy");
 	
@@ -64,7 +64,7 @@ public class PredictionController {
 	
 	
 	
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		
 		PredictionController pc = new PredictionController();
 		
@@ -117,15 +117,15 @@ public class PredictionController {
 				
 				//BudBreak
 				String budbreak = rootPath+"/src/main/webapp/budbreak.xls";
-				pc.generateTrainingData("03/22/2015","03/23/2015", budbreak);
-				pc.generateTrainingData("03/22/2014","03/23/2014", budbreak);
-				pc.generateTrainingData("03/22/2013","03/23/2013", budbreak);
-				pc.generateTrainingData("03/22/2012","03/23/2012", budbreak);
-				pc.generateTrainingData("03/22/2011","03/23/2011", budbreak);
-				pc.generateTrainingData("03/22/2010","03/23/2010", budbreak);
-	}
+				pc.generateTrainingData("12/01/2014","03/23/2015", budbreak);
+				pc.generateTrainingData("12/01/2013","03/23/2014", budbreak);
+				pc.generateTrainingData("12/01/2012","03/23/2013", budbreak);
+				pc.generateTrainingData("12/01/2011","03/23/2012", budbreak);
+				pc.generateTrainingData("12/01/2010","03/23/2011", budbreak);
+				pc.generateTrainingData("12/01/2009","03/23/2010", budbreak);
+	}*/
 	
-	public void generateTrainingData(String startDate, String endDate, final String filePath){
+	public void generateTrainingData(String startDate, String endDate, final String filePath, final String block){
 		try {		
 			
 				Date sDate = null;
@@ -141,6 +141,7 @@ public class PredictionController {
 				
 				FindIterable<Document> cursor = cimisCollection.find(getQuery).sort(new Document("_id",-1));
 				
+				if(!cursor.first().isEmpty()){
 				cursor.forEach(new Block<Document>() {
 					
 				    public void apply(Document document) {
@@ -265,7 +266,7 @@ public class PredictionController {
 						        
 						        BasicDBObject dyostemQuery = new BasicDBObject();
 						        dyostemQuery.put("Date of Analysis", qDate);
-						        dyostemQuery.put("Grape Variety", "Merlot B");
+						        dyostemQuery.put("Name of block", block);
 						        System.out.println("date for query"+qDate+"---->"+dyostemQuery);
 								FindIterable<Document> cursor = dyostemCollection.find(dyostemQuery);
 								
@@ -439,7 +440,7 @@ public class PredictionController {
 				        
 				    }
 				});
-				
+		}
 				//vc.xlsToCsv(inputFile, outputFile);
 				System.out.println("completed");
 		} catch (ParseException e1) {
@@ -482,7 +483,7 @@ public class PredictionController {
 				HSSFSheet sheet = null;
 				HSSFRow row = null;
 				HSSFCell cell1, cell2, cell3, cell4, cell5, cell6, cell7, cell8, cell9, cell10, cell11, cell12, cell13, cell14, cell15, cell16, cell17, cell18, cell19, cell20 = null;
-				HSSFCell cell21, cell22, cell23, cell24, cell25, cell26, cell27, cell28, cell29, cell30, cell31, cell32, cell33, cell34, cell35 = null;
+				HSSFCell cell21, cell22, cell23, cell24, cell25, cell26, cell27, cell28, cell29, cell30, cell31, cell32, cell33, cell34 = null;
 				//HSSFCell cell2 = null;
 				File file = new File(filePath);
 				if(file.exists()){
@@ -497,75 +498,73 @@ public class PredictionController {
 			         sheet = wb.createSheet();
 			         row = sheet.createRow(0);
 					 cell1 = row.createCell(0);
-					 cell1.setCellValue("Date");
+					 cell1.setCellValue("netRad");
 					 cell2 = row.createCell(1);
-					 cell2.setCellValue("netRad");
+					 cell2.setCellValue("relHum");
 					 cell3 = row.createCell(2);
-					 cell3.setCellValue("relHum");
+					 cell3.setCellValue("vapPres");
 					 cell4 = row.createCell(3);
-					 cell4.setCellValue("vapPres");
+					 cell4.setCellValue("windDir");
 					 cell5 = row.createCell(4);
-					 cell5.setCellValue("windDir");
+					 cell5.setCellValue("eto");
 					 cell6 = row.createCell(5);
-					 cell6.setCellValue("eto");
+					 cell6.setCellValue("asceEtr");
 					 cell7 = row.createCell(6);
-					 cell7.setCellValue("asceEtr");
+					 cell7.setCellValue("airTmp");
 					 cell8 = row.createCell(7);
-					 cell8.setCellValue("airTmp");
+					 cell8.setCellValue("dewPnt");
 					 cell9 = row.createCell(8);
-					 cell9.setCellValue("dewPnt");
+					 cell9.setCellValue("precip");
 					 cell10 = row.createCell(9);
-					 cell10.setCellValue("precip");
+					 cell10.setCellValue("windSpd");
 					 cell11 = row.createCell(10);
-					 cell11.setCellValue("windSpd");
+					 cell11.setCellValue("resWind");
 					 cell12 = row.createCell(11);
-					 cell12.setCellValue("resWind");
+					 cell12.setCellValue("solRad");
 					 cell13 = row.createCell(12);
-					 cell13.setCellValue("solRad");
+					 cell13.setCellValue("soilTmp");
 					 cell14 = row.createCell(13);
-					 cell14.setCellValue("soilTmp");
+					 cell14.setCellValue("asceEto");
 					 cell15 = row.createCell(14);
-					 cell15.setCellValue("asceEto");
+					 cell15.setCellValue("confIndexProfile");
 					 cell16 = row.createCell(15);
-					 cell16.setCellValue("confIndexProfile");
+					 cell16.setCellValue("confIndexBehav");
 					 cell17 = row.createCell(16);
-					 cell17.setCellValue("confIndexBehav");
+					 cell17.setCellValue("evolOfTheVol");
 					 cell18 = row.createCell(17);
-					 cell18.setCellValue("evolOfTheVol");
+					 cell18.setCellValue("tapCutOfDate");
 					 cell19 = row.createCell(18);
-					 cell19.setCellValue("tapCutOfDate");
+					 cell19.setCellValue("indexOfGlobalConf");
 					 cell20 = row.createCell(19);
-					 cell20.setCellValue("indexOfGlobalConf");
+					 cell20.setCellValue("medHue");
 					 cell21 = row.createCell(20);
-					 cell21.setCellValue("medHue");
+					 cell21.setCellValue("hue1st");
 					 cell22 = row.createCell(21);
-					 cell22.setCellValue("hue1st");
+					 cell22.setCellValue("hue9th");
 					 cell23 = row.createCell(22);
-					 cell23.setCellValue("hue9th");
+					 cell23.setCellValue("avgVol");
 					 cell24 = row.createCell(23);
-					 cell24.setCellValue("avgVol");
+					 cell24.setCellValue("volStdDev");
 					 cell25 = row.createCell(24);
-					 cell25.setCellValue("volStdDev");
+					 cell25.setCellValue("sugQuant");
 					 cell26 = row.createCell(25);
-					 cell26.setCellValue("sugQuant");
+					 cell26.setCellValue("sugConc");
 					 cell27 = row.createCell(26);
-					 cell27.setCellValue("sugConc");
+					 cell27.setCellValue("tapBrix");
 					 cell28 = row.createCell(27);
-					 cell28.setCellValue("tapBrix");
+					 cell28.setCellValue("acidity");
 					 cell29 = row.createCell(28);
-					 cell29.setCellValue("acidity");
+					 cell29.setCellValue("malicAcid");
 					 cell30 = row.createCell(29);
-					 cell30.setCellValue("malicAcid");
+					 cell30.setCellValue("ph");
 					 cell31 = row.createCell(30);
-					 cell31.setCellValue("ph");
+					 cell31.setCellValue("azoteAssi");
 					 cell32 = row.createCell(31);
-					 cell32.setCellValue("azoteAssi");
+					 cell32.setCellValue("avgBerryWeight");
 					 cell33 = row.createCell(32);
-					 cell33.setCellValue("avgBerryWeight");
+					 cell33.setCellValue("berryCount");
 					 cell34 = row.createCell(33);
-					 cell34.setCellValue("berryCount");
-					 cell35 = row.createCell(34);
-					 cell35.setCellValue("rating");
+					 cell34.setCellValue("rating");
 				} 
 				
 				row = sheet.createRow(sheet.getLastRowNum()+1);
@@ -603,85 +602,85 @@ public class PredictionController {
 				cell32 = row.createCell(31);
 				cell33 = row.createCell(32);
 				cell34 = row.createCell(33);
-				cell35 = row.createCell(34);
+				//cell35 = row.createCell(34);
 				//System.out.println("---------------->"+date);
-				HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
+				//HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
 				
-				CreationHelper createHelper = wb.getCreationHelper();
-				cellStyle.setDataFormat(
-				    createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
+				//CreationHelper createHelper = wb.getCreationHelper();
+				//cellStyle.setDataFormat(
+				  //  createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
 				
-				cell1.setCellValue((Date) date);
-				cell1.setCellStyle(cellStyle);
+				//cell1.setCellValue((Date) date);
+				//cell1.setCellStyle(cellStyle);
 				
+				cell1.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell1.setCellValue(netRadValue);
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell2.setCellValue(netRadValue);
+				cell2.setCellValue(relHumValue);
 				cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell3.setCellValue(relHumValue);
+				cell3.setCellValue(vapPresValue);
 				cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell4.setCellValue(vapPresValue);
+				cell4.setCellValue(windDirValue);
 				cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell5.setCellValue(windDirValue);
+				cell5.setCellValue(etoValue);
 				cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell6.setCellValue(etoValue);
+				cell6.setCellValue(asceEtrValue);
 				cell7.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell7.setCellValue(asceEtrValue);
+				cell7.setCellValue(airTmpValue);
 				cell8.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell8.setCellValue(airTmpValue);
+				cell8.setCellValue(dewPntValue);
 				cell9.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell9.setCellValue(dewPntValue);
+				cell9.setCellValue(precipValue);
 				cell10.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell10.setCellValue(precipValue);
+				cell10.setCellValue(windSpdValue);
 				cell11.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell11.setCellValue(windSpdValue);
+				cell11.setCellValue(resWindValue);
 				cell12.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell12.setCellValue(resWindValue);
+				cell12.setCellValue(solRadValue);
 				cell13.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell13.setCellValue(solRadValue);
+				cell13.setCellValue(soilTmpValue);
 				cell14.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell14.setCellValue(soilTmpValue);
+				cell14.setCellValue(asceEtoValue);
 				cell15.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell15.setCellValue(asceEtoValue);
+				cell15.setCellValue(confIndexProfileP);
 				cell16.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell16.setCellValue(confIndexProfileP);
+				cell16.setCellValue(confIndexBehavP);
 				cell17.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell17.setCellValue(confIndexBehavP);
+				cell17.setCellValue(evolOfTheVolP);
 				cell18.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell18.setCellValue(evolOfTheVolP);
+				cell18.setCellValue(tapCutOfDateP);
 				cell19.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell19.setCellValue(tapCutOfDateP);
+				cell19.setCellValue(indexOfGlobalConfP);
 				cell20.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell20.setCellValue(indexOfGlobalConfP);
+				cell20.setCellValue(medHueP);
 				cell21.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell21.setCellValue(medHueP);
+				cell21.setCellValue(hue1stP);
 				cell22.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell22.setCellValue(hue1stP);
+				cell22.setCellValue(hue9thP);
 				cell23.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell23.setCellValue(hue9thP);
+				cell23.setCellValue(avgVolP);
 				cell24.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell24.setCellValue(avgVolP);
+				cell24.setCellValue(volStdDevP);
 				cell25.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell25.setCellValue(volStdDevP);
+				cell25.setCellValue(sugQuantP);
 				cell26.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell26.setCellValue(sugQuantP);
+				cell26.setCellValue(sugConcP);
 				cell27.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell27.setCellValue(sugConcP);
+				cell27.setCellValue(tapBrixP);
 				cell28.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell28.setCellValue(tapBrixP);
+				cell28.setCellValue(acidityP);
 				cell29.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell29.setCellValue(acidityP);
+				cell29.setCellValue(malicAcidP);
 				cell30.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell30.setCellValue(malicAcidP);
+				cell30.setCellValue(phP);
 				cell31.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell31.setCellValue(phP);
+				cell31.setCellValue(azoteAssiP);
 				cell32.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell32.setCellValue(azoteAssiP);
+				cell32.setCellValue(avgBerryWeightP);
 				cell33.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell33.setCellValue(avgBerryWeightP);
+				cell33.setCellValue(berryCountP);
 				cell34.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell34.setCellValue(berryCountP);
-				cell35.setCellType(Cell.CELL_TYPE_NUMERIC);
-				cell35.setCellValue(rating);
+				cell34.setCellValue(rating);
 				
 				FileOutputStream fileOut = new FileOutputStream(filePath);
 				wb.write(fileOut);
