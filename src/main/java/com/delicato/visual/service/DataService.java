@@ -199,7 +199,6 @@ public class DataService {
 				        Document winddir=(Document) doc.get("HlyWindDir");
 				       // System.out.println(airtemp);
 				        date = (String) doc.get("Date");
-				        System.out.println("airtemp--> "+airtemp.get("Value")+"--"+"dewpoint--> "+dewpoint.get("Value")+"--"+"windspeed--> "+windspeed.get("Value")+"--"+"vappres--> "+vappres.get("Value")+"--"+"soiltemp-->"+soiltemp.get("Value")+"relhum--> "+relhum.get("Value")+"--"+"winddir--> "+winddir.get("Value")+"--");
 				       if(airtemp.get("Value") != null && airtemp.get("Value") != "" &&
 				        		dewpoint.get("Value") != null && dewpoint.get("Value") != "" &&
 				        				relhum.get("Value") != null && relhum.get("Value") != "" &&

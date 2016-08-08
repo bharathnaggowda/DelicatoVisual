@@ -35,7 +35,8 @@ public class PredictionController {
 	MongoCollection<Document> cimisCollection = db.getCollection("cimisdata");
 	MongoCollection<Document> dyostemCollection = db.getCollection("dyostemdata");
 	MongoCollection<Document> ratingCollection = db.getCollection("VintageRating");
-
+	MongoCollection<Document> dyostemCollectionNew = db.getCollection("dyostemdatanew");
+	
 	//VisualController vc = new VisualController();
 	final SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
 	SimpleDateFormat dFormat = new SimpleDateFormat("MM/dd/yy");
@@ -127,11 +128,8 @@ public class PredictionController {
 	
 	public void generateTrainingData(String startDate, String endDate, final String filePath, final String block){
 		try {		
-			
 				Date sDate = null;
 				Date eDate = null;
-				
-				
 					sDate = dFormat.parse(startDate);
 					eDate = dFormat.parse(endDate);
 				
@@ -141,7 +139,7 @@ public class PredictionController {
 				
 				FindIterable<Document> cursor = cimisCollection.find(getQuery).sort(new Document("_id",-1));
 				
-				if(!cursor.first().isEmpty()){
+				//if(!cursor.first().isEmpty()){
 				cursor.forEach(new Block<Document>() {
 					
 				    public void apply(Document document) {
@@ -149,8 +147,7 @@ public class PredictionController {
 				        String date = "";
 				        Document a = (Document) document.get("hourlydata");
 				        ArrayList contents = (ArrayList) a.get("Records");
-				        double degree = 0;
-				        int daysCount = 0;
+				        
 				        String qDate = "";
 				        Date d = null;
 				        
@@ -188,7 +185,6 @@ public class PredictionController {
 						double azoteAssi = 0 ;
 						double avgBerryWeight = 0 ;
 						double berryCount = 0 ;
-						
 						Boolean matchFound = false;
 						
 				        int count = 1;
@@ -409,10 +405,6 @@ public class PredictionController {
 											else if(match.get("Berries count") instanceof Integer)
 												berryCount =  (double) (Integer) match.get("Berries count");
 										}
-									 
-									 	 
-									 
-									 
 								}
 								
 								BasicDBObject ratingQuery = new BasicDBObject();
@@ -440,7 +432,7 @@ public class PredictionController {
 				        
 				    }
 				});
-		}
+		//}
 				//vc.xlsToCsv(inputFile, outputFile);
 				System.out.println("completed");
 		} catch (ParseException e1) {

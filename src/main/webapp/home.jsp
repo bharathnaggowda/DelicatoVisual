@@ -53,7 +53,7 @@
   		
 		<!-- 1. Add these JavaScript inclusions in the head of your page -->
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+	
 	<script src="https://code.highcharts.com/highcharts.js"></script>
 	<script src="https://code.highcharts.com/modules/data.js"></script>
 	<script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -62,6 +62,99 @@
 
 <script src="https://www.highcharts.com/samples/static/highslide-full.min.js"></script>
 <script src="https://www.highcharts.com/samples/static/highslide.config.js" charset="utf-8"></script>
+  <script type="text/javascript">
+  $(function () {
+	  var chart = new Highcharts.Chart({
+	        chart: {
+	            type: 'spline',
+	            renderTo: 'comparisioncontainer'
+	        },
+	        title: {
+	            text: 'Snow depth at Vikjafjellet, Norway'
+	        },
+	        subtitle: {
+	            text: 'Irregular time data in Highcharts JS'
+	        },
+	        xAxis: {
+	            type: 'datetime',
+	            dateTimeLabelFormats: { // don't display the dummy year
+	                month: '%e. %b',
+	                year: '%b'
+	            },
+	            title: {
+	                text: 'Date'
+	            }
+	        },
+	        yAxis: {
+	            title: {
+	                text: 'Snow depth (m)'
+	            },
+	            min: 0
+	        },
+	        tooltip: {
+	            headerFormat: '<b>{series.name}</b><br>',
+	            pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+	        },
+
+	        plotOptions: {
+	            spline: {
+	                marker: {
+	                    enabled: true
+	                }
+	            }
+	        },
+
+	        series: [{
+	            name: 'Winter 2012-2013',
+	            // Define the data points. All series have a dummy year
+	            // of 1970/71 in order to be compared on the same x axis. Note
+	            // that in JavaScript, months start at 0 for January, 1 for February etc.
+	            data: [
+	                [Date.UTC(1970, 9, 21), 0],
+	                [Date.UTC(1970, 10, 4), 0.28],
+	                [Date.UTC(1970, 10, 9), 0.25],
+	                [Date.UTC(1970, 10, 27), 0.2],
+	                [Date.UTC(1970, 11, 2), 0.28],
+	                [Date.UTC(1970, 11, 26), 0.28],
+	                [Date.UTC(1970, 11, 29), 0.47],
+	                [Date.UTC(1971, 0, 11), 0.79],
+	                [Date.UTC(1971, 0, 26), 0.72],
+	                [Date.UTC(1971, 1, 3), 1.02],
+	                [Date.UTC(1971, 1, 11), 1.12],
+	                [Date.UTC(1971, 1, 25), 1.2],
+	                [Date.UTC(1971, 2, 11), 1.18],
+	                [Date.UTC(1971, 3, 11), 1.19],
+	                [Date.UTC(1971, 4, 1), 1.85],
+	                [Date.UTC(1971, 4, 5), 2.22],
+	                [Date.UTC(1971, 4, 19), 1.15],
+	                [Date.UTC(1971, 5, 3), 0]
+	            ]
+	        }, {
+	            name: 'Winter 2013-2014',
+	            data: [
+	                [Date.UTC(1970, 9, 29), 0],
+	                [Date.UTC(1970, 10, 9), 0.4],
+	                [Date.UTC(1970, 11, 1), 0.25],
+	                [Date.UTC(1971, 0, 1), 1.66],
+	                [, ],
+	                [, ],
+	                [, ],
+	                [, ]
+	            ]
+	        }, {
+	            name: 'Winter 2014-2015',
+	            data: [
+	                [Date.UTC(1970, 07, 24), 2.87],
+	                [Date.UTC(1970, 08, 01), 2.97],
+	                [, ],
+	                [, ],
+	                [, ],
+	                [, ]
+	            ]
+	        }]
+	    });
+	});
+  </script>
   
   
 		<script type="text/javascript">
@@ -540,6 +633,239 @@ function senddate(id){
 			
 		
 		</script>
+		
+		<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    
+    var x1 = ${predValueBudBreakOne};
+    var x2 = ${predValueBudBreakTwo};
+    var x3 = ${predValueBudBreakThree};
+    var x4 = ${predValueBudBreakFour};
+    var x5 = ${predValueBudBreakFive};
+    var x6 = ${predValueBudBreakSix};
+    var x7 = ${predValueBudBreakSeven};
+    var x8 = ${predValueBudBreakEight};
+    var x9 = ${predValueBudBreakNine};
+    var x10 = ${predValueBudBreakTen};
+    
+    google.load("visualization", "1", {packages:["corechart"]});
+    
+      google.setOnLoadCallback(drawChartBB);
+      google.setOnLoadCallback(drawChartB);
+      google.setOnLoadCallback(drawChartS);
+      google.setOnLoadCallback(drawChartC);
+      google.setOnLoadCallback(drawChartV);
+      google.setOnLoadCallback(drawChartH);
+      
+      function drawChartBB() {
+
+        var dataBB = google.visualization.arrayToDataTable([
+          ['Budbreak', 'Number'],
+          ['0 to 0.5',     x1],
+          ['0.5 to 1',      x2],
+          ['1 to 1.5',  x3],
+          ['1.5 to 2', x4],
+          ['2 to 2.5',  x5],
+          ['2.5 to 3',     x6],
+          ['3 to 3.5',      x7],
+          ['3.5 to 4',  x8],
+          ['4 to 4.5', x9],
+          ['4.5 to 5',  x10]
+        ]);
+
+        var optionsBB = {
+                title: 'Budbreak Prediction',
+                is3D: true,
+              };
+
+              var chartBB = new google.visualization.PieChart(document.getElementById('budbreakchart'));
+              chartBB.draw(dataBB, optionsBB);
+            }
+    
+    var x1b = ${predValueBloomOne};
+    var x2b = ${predValueBloomTwo};
+    var x3b = ${predValueBloomThree};
+    var x4b = ${predValueBloomFour};
+    var x5b = ${predValueBloomFive};
+    var x6b = ${predValueBloomSix};
+    var x7b = ${predValueBloomSeven};
+    var x8b = ${predValueBloomEight};
+    var x9b = ${predValueBloomNine};
+    var x10b = ${predValueBloomTen};
+    
+      
+      function drawChartB() {
+
+        var dataB = google.visualization.arrayToDataTable([
+          ['Bloom', 'Number'],
+          ['0 to 0.5',     x1b],
+          ['0.5 to 1',      x2b],
+          ['1 to 1.5',  x3b],
+          ['1.5 to 2', x4b],
+          ['2 to 2.5',  x5b],
+          ['2.5 to 3',     x6b],
+          ['3 to 3.5',      x7b],
+          ['3.5 to 4',  x8b],
+          ['4 to 4.5', x9b],
+          ['4.5 to 5',  x10b]
+        ]);
+
+        var optionsB = {
+                title: 'Bloom Prediction',
+                is3D: true,
+              };
+
+              var chartB = new google.visualization.PieChart(document.getElementById('bloomchart'));
+              chartB.draw(dataB, optionsB);
+            }
+    
+    var x1s = ${predValueSetOne};
+    var x2s = ${predValueSetTwo};
+    var x3s = ${predValueSetThree};
+    var x4s = ${predValueSetFour};
+    var x5s = ${predValueSetFive};
+    var x6s = ${predValueSetSix};
+    var x7s = ${predValueSetSeven};
+    var x8s = ${predValueSetEight};
+    var x9s = ${predValueSetNine};
+    var x10s = ${predValueSetTen};
+      
+      function drawChartS() {
+
+        var dataS = google.visualization.arrayToDataTable([
+          ['Set', 'Number'],
+          ['0 to 0.5',     x1s],
+          ['0.5 to 1',      x2s],
+          ['1 to 1.5',  x3s],
+          ['1.5 to 2', x4s],
+          ['2 to 2.5',  x5s],
+          ['2.5 to 3',     x6s],
+          ['3 to 3.5',      x7s],
+          ['3.5 to 4',  x8s],
+          ['4 to 4.5', x9s],
+          ['4.5 to 5',  x10s]
+        ]);
+
+        var optionsS = {
+                title: 'Set Prediction',
+                is3D: true,
+              };
+
+              var chartS = new google.visualization.PieChart(document.getElementById('setchart'));
+              chartS.draw(dataS, optionsS);
+            }
+    
+    var x1v = ${predValueClosureOne};
+    var x2v = ${predValueClosureTwo};
+    var x3v = ${predValueClosureThree};
+    var x4v = ${predValueClosureFour};
+    var x5v = ${predValueClosureFive};
+    var x6v = ${predValueClosureSix};
+    var x7v = ${predValueClosureSeven};
+    var x8v = ${predValueClosureEight};
+    var x9v = ${predValueClosureNine};
+    var x10v = ${predValueClosureTen};
+    
+      
+      function drawChartC() {
+
+        var dataC = google.visualization.arrayToDataTable([
+          ['Closure', 'Number'],
+          ['0 to 0.5',     x1v],
+          ['0.5 to 1',      x2v],
+          ['1 to 1.5',  x3v],
+          ['1.5 to 2', x4v],
+          ['2 to 2.5',  x5v],
+          ['2.5 to 3',     x6v],
+          ['3 to 3.5',      x7v],
+          ['3.5 to 4',  x8v],
+          ['4 to 4.5', x9v],
+          ['4.5 to 5',  x10v]
+        ]);
+
+        var optionsC = {
+                title: 'Closure Prediction',
+                is3D: true,
+              };
+
+              var chartC = new google.visualization.PieChart(document.getElementById('closurechart'));
+              chartC.draw(dataC, optionsC);
+            }
+    
+    var x1c = ${predValueVeraisonOne};
+    var x2c = ${predValueVeraisonTwo};
+    var x3c = ${predValueVeraisonThree};
+    var x4c = ${predValueVeraisonFour};
+    var x5c = ${predValueVeraisonFive};
+    var x6c = ${predValueVeraisonSix};
+    var x7c = ${predValueVeraisonSeven};
+    var x8c = ${predValueVeraisonEight};
+    var x9c = ${predValueVeraisonNine};
+    var x10c = ${predValueVeraisonTen};
+    
+      
+      function drawChartV() {
+
+        var dataV = google.visualization.arrayToDataTable([
+          ['Veraison', 'Number'],
+          ['0 to 0.5',     x1c],
+          ['0.5 to 1',      x2c],
+          ['1 to 1.5',  x3c],
+          ['1.5 to 2', x4c],
+          ['2 to 2.5',  x5c],
+          ['2.5 to 3',     x6c],
+          ['3 to 3.5',      x7c],
+          ['3.5 to 4',  x8c],
+          ['4 to 4.5', x9c],
+          ['4.5 to 5',  x10c]
+        ]);
+
+        var optionsV = {
+                title: 'Veraison Prediction',
+                is3D: true,
+              };
+
+              var chartV = new google.visualization.PieChart(document.getElementById('veraisonchart'));
+              chartV.draw(dataV, optionsV);
+            }
+    
+    var x1h = ${predValueHarvestOne};
+    var x2h = ${predValueHarvestTwo};
+    var x3h = ${predValueHarvestThree};
+    var x4h = ${predValueHarvestFour};
+    var x5h = ${predValueHarvestFive};
+    var x6h = ${predValueHarvestSix};
+    var x7h = ${predValueHarvestSeven};
+    var x8h = ${predValueHarvestEight};
+    var x9h = ${predValueHarvestNine};
+    var x10h = ${predValueHarvestTen};
+    
+      
+      function drawChartH() {
+
+        var dataH = google.visualization.arrayToDataTable([
+          ['Harvest', 'Number'],
+          ['0 to 0.5',     x1h],
+          ['0.5 to 1',      x2h],
+          ['1 to 1.5',  x3h],
+          ['1.5 to 2', x4h],
+          ['2 to 2.5',  x5h],
+          ['2.5 to 3',     x6h],
+          ['3 to 3.5',      x7h],
+          ['3.5 to 4',  x8h],
+          ['4 to 4.5', x9h],
+          ['4.5 to 5',  x10h]
+        ]);
+
+        var optionsH = {
+                title: 'Harvest Prediction',
+                is3D: true,
+              };
+
+              var chartH = new google.visualization.PieChart(document.getElementById('harvestchart'));
+              chartH.draw(dataH, optionsH);
+            }
+          </script>
 </head>
 
 
@@ -627,13 +953,13 @@ function senddate(id){
             
             <!-- Single Navigation Menu Button [ END ]  -->
             
-            <div data-url_target="predictions" class="contact-btn menu_button">
+            <div data-url_target="comparisions" class="contact-btn menu_button">
                 <img alt="" src="resources/img/contact.jpg">
                 <div class="mask">
                 </div>
                 <div class="heading">
                     <i class="ion-ios-chatboxes-outline hidden-xs"></i>
-                    <h2>Predictions</h2>
+                    <h2>Comparisions</h2>
                 </div>
             </div>
             
@@ -866,7 +1192,7 @@ function senddate(id){
     8 ) Contact Page
     -->
     
-    <div id="predictions" class="contact-page container-fluid page">
+    <div id="comparisions" class="contact-page container-fluid page">
         <div class="row">
             <!--( a ) Contact Page Fixed Image Portion -->
             
@@ -874,7 +1200,7 @@ function senddate(id){
                 <div class="mask">
                 </div>
                 <div class="main-heading">
-                    <h1>Predictions</h1>
+                    <h1>Comparisions</h1>
                 </div>
             </div>
             
@@ -885,16 +1211,14 @@ function senddate(id){
                 <!--( A ) Contact Form -->
                 
                 <div class="clearfix full-height">
-                    <h2 class="small-heading">Know the future</h2>
+                    <h2 class="small-heading">Comparision charts for the Block : ${blockC}</h2>
                     <div class="row">
                         <div class="col-md-10 col-md-offset-1 col-xs-10 col-xs-offset-1">
                             <div class="contact-info">
                                 
                                     
-                                   
-                                        <div id="map-canvas" hidden="hidden"></div>
-                                <form:form action="${pageContext.request.contextPath}/predictions#predictions" method="post" name="pred">
-						        	Blocks:
+                                <form:form action="${pageContext.request.contextPath}/comparisions#comparisions" method="post" name="comp">
+						        	Select a Block to Compare:
 						        	<select name="block" onchange="this.form.submit()">	
 						        		<c:if  test="${!empty blocks}">
 										<c:forEach items="${blocks}" var="block">
@@ -903,17 +1227,58 @@ function senddate(id){
 							            </c:forEach>
 							            </c:if>
 									</select>				        		
-						        			<input type="text" value="${startdate}" id="datepickerStartDateDD" name="startdate" placeholder="Start Date">
-						        			<input type="text" value="${enddate}" id="datepickerEndDateDD" name="enddate" placeholder="End Date" >
+						        			<%-- <input type="text" value="${startdate}" id="datepickerStartDateDD" name="startdate" placeholder="Start Date">
+						        			<input type="text" value="${enddate}" id="datepickerEndDateDD" name="enddate" placeholder="End Date" > --%>
 						        		
-						                    <button type="submit" class="">Predict</button>
-						                
-						        		</form:form> 
-                                      
-                               
+						        		</form:form>  
+						        		<div id="comparisioncontainer" style="width:80%; height:80%; "></div><br>
                                     
                             </div>
-
+							<div class="contact-info">
+                               <h2 class="small-heading">Predictions for the Block :   ${blockP}</h2>
+                                    
+                                <form:form action="${pageContext.request.contextPath}/predictions#comparisions" method="post" name="pred">
+						        	Select a Block to Predict:
+						        	<select name="block" onchange="this.form.submit()">	
+						        		<c:if  test="${!empty blocks}">
+										<c:forEach items="${blocks}" var="block">
+							         		<option value="${block}">${block}</option>
+							         	
+							            </c:forEach>
+							            </c:if>
+									</select>				        		
+						        			<%-- <input type="text" value="${startdate}" id="datepickerStartDateDD" name="startdate" placeholder="Start Date">
+						        			<input type="text" value="${enddate}" id="datepickerEndDateDD" name="enddate" placeholder="End Date" > --%>
+						        		
+						        		</form:form> 
+						        		
+						        		<div id="budbreakchart" style="width:80%; height:80%;"></div>
+						        		<c:if  test="${!empty predValueBudBreak}">
+						        		<p>Predicted Rating for Bud Break : ${predValueBudBreak}</p> 
+						        		</c:if> 
+						        		<div id="bloomchart" style="width:80%; height:80%;"></div>
+						        		<c:if  test="${!empty predValueBudBreak}">
+						        		<p>Predicted Rating for Bloom : ${predValueBloom}</p>  
+						        		</c:if>
+						        		<div id="setchart" style="width:80%; height:80%;"></div>
+						        		<c:if  test="${!empty predValueBudBreak}">
+						        		<p>Predicted Rating for Set : ${predValueSet}</p>
+						        		</c:if>
+						        		<div id="closurechart" style="width:80%; height:80%;"></div>
+						        		<c:if  test="${!empty predValueBudBreak}">
+						        		<p>Predicted Rating for Closure : ${predValueClosure}</p> 
+						        		</c:if>
+						        		<div id="veraisonchart" style="width:80%; height:80%;"></div>
+						        		<c:if  test="${!empty predValueBudBreak}">
+                               			<p>Predicted Rating for Veraison : ${predValueVeraison}</p> 
+                               			</c:if>
+						        		<div id="harvestchart" style="width:80%; height:80%;"></div>
+						        		<c:if  test="${!empty predValueBudBreak}">
+                              			<p>Predicted Rating for Harvest : ${predValueHarvest}</p> 
+                              			</c:if>
+                                   
+                                    
+                            </div>
                             
                         </div>
                     </div>
