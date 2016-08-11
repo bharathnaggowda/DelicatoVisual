@@ -14,7 +14,13 @@ public class Factors {
 	private String maxWindTheshold;
 	private Date givendate;
 	private String block;
-	
+	private String grapename;
+	public String getGrapename(){
+		return grapename;
+	}
+	public void setGrapename(String grapename) {
+		this.grapename = grapename;
+	}
 	
 	public String getBlock() {
 		return block;

@@ -37,14 +37,23 @@ public class VisualController {
 	
 	String rootPath =System.getProperty("user.dir");
 	File rScript = new File(rootPath+"/src/main/webapp/rQuery.txt");
-	List<String> sortedList;
+	List<String> sortedBlocksList;
+	List<String> sortedGrapesList;
 	
 	@RequestMapping(value="/home", method=RequestMethod.POST)
 	public String home(Factors factors, Model model) 
 	{
-		sortedList = new ArrayList<String>(dataService.getBlocks());
-		Collections.sort(sortedList);
-		model.addAttribute("blocks", sortedList);
+		sortedBlocksList = new ArrayList<String>(dataService.getBlocks());
+		Collections.sort(sortedBlocksList);
+		model.addAttribute("blocks", sortedBlocksList);
+		
+		sortedGrapesList = new ArrayList<String>(dataService.getGrapeVeriety());
+		Collections.sort(sortedGrapesList);
+		model.addAttribute("grapes", sortedGrapesList);
+		for(String c :sortedGrapesList){
+			System.out.println(c);
+		}
+		
 		return "home";
 	}
 	
@@ -58,6 +67,9 @@ public class VisualController {
 		int maxTempTheshold = Integer.MAX_VALUE;
 		int minHumTheshold = Integer.MIN_VALUE;
 		int maxWindTheshold = Integer.MAX_VALUE;
+		
+		model.addAttribute("blocks", sortedBlocksList);
+		model.addAttribute("grapes", sortedGrapesList);
 		
 		try {
 			sDate = format.parse(factors.getStartdate());
@@ -91,6 +103,8 @@ public class VisualController {
 		Date sDate = null;
 		Date eDate = null;
 
+		model.addAttribute("blocks", sortedBlocksList);
+		model.addAttribute("grapes", sortedGrapesList);
 		double airtemp=0, dewpoint=0, relhum=0, soiltemp=0,  vappres=0, windspeed=0,winddir=0;
 		
 		try {
@@ -112,6 +126,8 @@ public class VisualController {
 	@RequestMapping(value="/cimissubgraph", method=RequestMethod.POST)
 	public String cimisCimisSubGraph(Factors factors, Model model) throws ParseException 
 	{
+		model.addAttribute("blocks", sortedBlocksList);
+		model.addAttribute("grapes", sortedGrapesList);
 		Date gDate=null;
 		double airtemp=0, dewpoint=0, relhum=0, soiltemp=0 ,vappres=0, windspeed=0,winddir=0;
 		
@@ -131,7 +147,8 @@ public class VisualController {
 	@RequestMapping(value="/comparisions", method=RequestMethod.POST)
 	public String comparisions(Factors factors, Model model) 
 	{
-		model.addAttribute("blocks", sortedList);
+		model.addAttribute("blocks", sortedBlocksList);
+		model.addAttribute("grapes", sortedGrapesList);
 		String block = factors.getBlock();
 		
 		try {
@@ -150,12 +167,34 @@ public class VisualController {
 			
 		return "home";
 	}
-	
+	@RequestMapping(value="/blocknames", method=RequestMethod.POST)
+	public String dyostemblockname(Factors factors, Model model) throws ParseException 
+	{
+		String grapename=null;
+		String blockname="";
+	     double tapbrix=0;
+		//Date qDate=null;
+	     model.addAttribute("blocks", sortedBlocksList);
+			model.addAttribute("grapes", sortedGrapesList);
+		try {
+			grapename = factors.getGrapename();
+			//qDate = factors.getGivendate();
+			dataService.getblockname(blockname,grapename,tapbrix);
+			
+			model.addAttribute("grapename",factors.getGrapename());
+			//model.addAttribute("givendate",factors.getGivendate());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "home";
+	}
 	@RequestMapping(value="/predictions", method=RequestMethod.POST)
 	public String predictions(Factors factors, Model model) 
 	{
 		try{
-			model.addAttribute("blocks", sortedList);
+			model.addAttribute("blocks", sortedBlocksList);
+			model.addAttribute("grapes", sortedGrapesList);
 			String block = factors.getBlock();
 			
 			
@@ -164,13 +203,13 @@ public class VisualController {
 				//Harvest
 			String harvest = rootPath+"/src/main/webapp/"+block+"Harvest.xls";
 			String harvestCurrent = rootPath+"/src/main/webapp/"+block+"HarvestCurrent.xls";
-			pc.generateTrainingData("07/25/2016","09/26/2016", harvestCurrent,block);
+			pc.generateTrainingData("07/25/2015","09/26/2015", harvestCurrent,block);
 			File harvestFile = new File(harvest);
 			if(!harvestFile.exists()){
 					
 					pc.generateTrainingData("07/25/2015","09/26/2015", harvest,block);
 					pc.generateTrainingData("07/25/2014","09/26/2014", harvest,block);
-					//pc.generateTrainingData("07/25/2013","09/26/2013", harvest,block);
+					pc.generateTrainingData("07/25/2013","09/26/2013", harvest,block);
 					//pc.generateTrainingData("07/25/2012","09/26/2012", harvest,block);
 					//pc.generateTrainingData("07/25/2011","09/26/2011", harvest,block);
 					//pc.generateTrainingData("07/25/2010","09/26/2010", harvest,block);
@@ -207,13 +246,13 @@ public class VisualController {
 				//Veraison
 				String veraison = rootPath+"/src/main/webapp/"+block+"Veraison.xls";
 				String veraisonCurrent = rootPath+"/src/main/webapp/"+block+"veraisonCurrent.xls";
-				pc.generateTrainingData("07/10/2016","07/26/2016", veraisonCurrent,block);
+				pc.generateTrainingData("07/10/2015","07/26/2015", veraisonCurrent,block);
 				File veraisonFile = new File(veraison);
 				if(!veraisonFile.exists()){
 					
 					pc.generateTrainingData("07/10/2015","07/26/2015", veraison,block);
 					pc.generateTrainingData("07/10/2014","07/26/2014", veraison,block);
-					//pc.generateTrainingData("07/10/2013","07/26/2013", veraison,block);
+					pc.generateTrainingData("07/10/2013","07/26/2013", veraison,block);
 					//pc.generateTrainingData("07/10/2012","07/26/2012", veraison,block);
 					//pc.generateTrainingData("07/10/2011","07/26/2011", veraison,block);
 					//pc.generateTrainingData("07/10/2010","07/26/2010", veraison,block);
@@ -251,13 +290,13 @@ public class VisualController {
 				//Closure
 				String closure = rootPath+"/src/main/webapp/"+block+"Closure.xls";
 				String closureCurrent = rootPath+"/src/main/webapp/"+block+"ClosureCurrent.xls";
-				pc.generateTrainingData("06/04/2016","07/11/2016", closureCurrent,block);
+				pc.generateTrainingData("06/04/2015","07/11/2015", closureCurrent,block);
 				File closureFile = new File(closure);
 				if(!closureFile.exists()){
 					
 					pc.generateTrainingData("06/04/2015","07/11/2015", closure,block);
 					pc.generateTrainingData("06/04/2014","07/11/2014", closure,block);
-					//pc.generateTrainingData("06/04/2013","07/11/2013", closure,block);
+					pc.generateTrainingData("06/04/2013","07/11/2013", closure,block);
 					//pc.generateTrainingData("06/04/2012","07/11/2012", closure,block);
 					//pc.generateTrainingData("06/04/2011","07/11/2011", closure,block);
 					//pc.generateTrainingData("06/04/2010","07/11/2010", closure,block);
@@ -295,13 +334,13 @@ public class VisualController {
 				//Set
 				String set = rootPath+"/src/main/webapp/"+block+"Set.xls";
 				String setCurrent = rootPath+"/src/main/webapp/"+block+"SetCurrent.xls";
-				pc.generateTrainingData("05/09/2016","06/05/2016", setCurrent,block);
+				pc.generateTrainingData("05/09/2015","06/05/2015", setCurrent,block);
 				File setFile = new File(set);
 				if(!setFile.exists()){
 					
 					pc.generateTrainingData("05/09/2015","06/05/2015", set,block);
 					pc.generateTrainingData("05/09/2014","06/05/2014", set,block);
-					//pc.generateTrainingData("05/09/2013","06/05/2013", set,block);
+					pc.generateTrainingData("05/09/2013","06/05/2013", set,block);
 					//pc.generateTrainingData("05/09/2012","06/05/2012", set,block);
 					//pc.generateTrainingData("05/09/2011","06/05/2011", set,block);
 					//pc.generateTrainingData("05/09/2010","06/05/2010", set,block);
@@ -339,13 +378,13 @@ public class VisualController {
 				//Bloom
 				String bloom = rootPath+"/src/main/webapp/"+block+"Bloom.xls";
 				String bloomCurrent = rootPath+"/src/main/webapp/"+block+"BloomCurrent.xls";
-				pc.generateTrainingData("03/22/2016","05/10/2016", bloomCurrent,block);
+				pc.generateTrainingData("03/22/2015","05/10/2015", bloomCurrent,block);
 				File bloomFile = new File(bloom);
 				if(!bloomFile.exists()){
 					
 					pc.generateTrainingData("03/22/2015","05/10/2015", bloom,block);
 					pc.generateTrainingData("03/22/2014","05/10/2014", bloom,block);
-					//pc.generateTrainingData("03/22/2013","05/10/2013", bloom,block);
+					pc.generateTrainingData("03/22/2013","05/10/2013", bloom,block);
 					//pc.generateTrainingData("03/22/2012","05/10/2012", bloom,block);
 					//pc.generateTrainingData("03/22/2011","05/10/2011", bloom,block);
 					//pc.generateTrainingData("03/22/2010","05/10/2010", bloom,block);
@@ -385,7 +424,7 @@ public class VisualController {
 				//BudBreak
 				String budbreak = rootPath+"/src/main/webapp/"+block+"BudBreak.xls";
 				String budbreakCurrent = rootPath+"/src/main/webapp/"+block+"BudBreakCurrent.xls";
-				pc.generateTrainingData("12/01/2016","03/23/2016", budbreakCurrent,block);
+				pc.generateTrainingData("12/01/2015","03/23/2015", budbreakCurrent,block);
 				File budbreakFile = new File(budbreak);
 				if(!budbreakFile.exists()){
 					
@@ -424,7 +463,6 @@ public class VisualController {
 					model.addAttribute("predValueBudBreakNine", 0);
 					model.addAttribute("predValueBudBreakTen", 0);
 				}
-				model.addAttribute("blockP", block);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

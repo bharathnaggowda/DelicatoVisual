@@ -15,6 +15,7 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 public class DataService {
@@ -33,6 +34,7 @@ public class DataService {
 	
 	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 	HashSet<String> blocks = new HashSet<String>();
+	HashSet<String> grapes = new HashSet<String>();
 	
 	public HashSet<String> getBlocks() {
 		
@@ -51,6 +53,24 @@ public class DataService {
 		    });
 		}
 	    return blocks;
+	}
+	public HashSet<String> getGrapeVeriety() {
+		
+		if(grapes.isEmpty()){
+			
+			BasicDBObject getQuery = new BasicDBObject();
+		    FindIterable<Document> cursor = dyostemCollection.find(getQuery);
+		    
+		    cursor.forEach(new Block<Document>() {
+				
+			    public void apply(Document document) {
+			    	
+			    	String grape = (String) document.get("Grape variety");
+			    	grapes.add(grape);
+			    }
+		    });
+		}
+	    return grapes;
 	}
 	
 	public void getCimisData(Date sDate, Date eDate, int minTempTheshold, int maxTempTheshold, int minWindTheshold, int maxWindTheshold){
@@ -351,6 +371,65 @@ public class DataService {
 			csvService.xlsToCsv(inputFile1, outputFile1);
 			System.out.println("completed2");
 		}
+public void getblockname(String blockname, String grapename,double tapbrix){
+		
+		File inputFile = new File(filePath+"blockname.xls");
+	    File outputFile = new File(filePath+"blockname.csv");
+		
+	   
+			if(inputFile.exists()){
+				inputFile.delete();
+			}
+			if(outputFile.exists()){
+				outputFile.delete();
+			}
+			
+			//Boolean matchFound = false;
+			BasicDBObject dyostemQuery = new BasicDBObject();
+	        //dyostemQuery.put("Date of Analysis", qDate);
+	        dyostemQuery.put("Grape variety", grapename);
+	        System.out.println("grapename---"+grapename+"---->"+dyostemQuery);
+	        //FindIterable<Document> cursor = dyostemCollection.find(dyostemQuery);
+			try (MongoCursor<Document> cur = dyostemCollection.find(dyostemQuery).iterator()) {
+	            while (cur.hasNext()) {
 
+	                Document doc = cur.next();
+	                
+	                ArrayList list = new ArrayList(doc.values());
+	                System.out.println(list.get(6));
+	                if(!list.get(6).toString().trim().equals("") && list.get(6) != null && !(list.get(6) instanceof Integer)){
+	                	tapbrix= (double) list.get(6);
+	                }else if(list.get(6) instanceof Integer){
+	                	tapbrix=  (Integer) list.get(6);
+	                }
+	                	
+	                blockname=(String) list.get(1);
+	                grapename=(String) list.get(2);
+	                System.out.print(list.get(1));
+	                System.out.print(": ");
+	                System.out.println(list.get(2));
+	                System.out.print(": ");
+	                System.out.println(list.get(6));
+	                xlsService.writeToCsvforblockname( blockname,tapbrix);
+	            }
+	        }
+			
+			/*SimpleDateFormat dFormat = new SimpleDateFormat("MM/dd/yy");
+				Date d = null;
+		        try {
+					d = dFormat.parse(date);
+					System.out.println("sssssssssssssssssssdate---------->"+d);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}*/
+			 
+		        xlsService.writeToCsvforblockname(blockname,tapbrix);
+    	
+
+			   
+			csvService.xlsToCsvDyostem(inputFile, outputFile);
+			
+			System.out.println("completedblocknames");
+		}
 	
 }

@@ -165,7 +165,7 @@ public class CompareData {
 			cell2 = row.createCell(1);
 			String d = format.format(dateOfAnalysis);
 			String[] dates = d.split("/");
-			String date = "Date.UTC(1980/"+dates[0]+"/"+dates[1]+")";
+			String date = "1980-"+dates[0]+"-"+dates[1];
 			cell1.setCellType(Cell.CELL_TYPE_STRING);
 			cell1.setCellValue(date);
 			

@@ -32,13 +32,8 @@ public class DyostemDataController {
 		
 		FindIterable<Document> cursor = dyostemCollection.find();
 		
-		
-		
-		
-		//if(!cursor.first().isEmpty()){
 			cursor.forEach(new Block<Document>() {
 				public void apply(Document match) {
-					System.out.println("vvvvvvvvvvvvvvvvvvvvvv------------->"+match);
 					Document dyostemInsert = new Document();
 					double confIndexProfile = 0 ;
 					double confIndexBehav = 0  ;
@@ -232,12 +227,9 @@ public class DyostemDataController {
 					 dyostemInsert.put("Azote assimilable", azoteAssi);
 					 dyostemInsert.put("Average berry weight", avgBerryWeight);
 					 dyostemInsert.put("Berries count", berryCount);
-					 System.out.println("insert count---------------------------------------------------------------------------------------->");
 					 dyostemCollectionNew.insertOne(dyostemInsert);
 				}
 			});
-		//}
-		
 	}
 
 }

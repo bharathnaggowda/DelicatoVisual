@@ -11,12 +11,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CreationHelper;
 import org.bson.Document;
 
 import com.delicato.visual.config.SpringMongoConfig;
@@ -37,11 +35,8 @@ public class PredictionController {
 	MongoCollection<Document> ratingCollection = db.getCollection("VintageRating");
 	MongoCollection<Document> dyostemCollectionNew = db.getCollection("dyostemdatanew");
 	
-	//VisualController vc = new VisualController();
 	final SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
 	SimpleDateFormat dFormat = new SimpleDateFormat("MM/dd/yy");
-	
-	
 	
 	double confIndexProfileP;
 	double confIndexBehavP ;
@@ -62,70 +57,7 @@ public class PredictionController {
 	double azoteAssiP ;
 	double avgBerryWeightP  ;
 	double berryCountP ;
-	
-	
-	
-	/*public static void main(String[] args) {
-		
-		PredictionController pc = new PredictionController();
-		
-		String rootPath =System.getProperty("user.dir");
-		
-		//Harvest
-		String harvest = rootPath+"/src/main/webapp/harvest.xls";
-		pc.generateTrainingData("07/25/2015","09/26/2015", harvest);
-		pc.generateTrainingData("07/25/2014","09/26/2014", harvest);
-		pc.generateTrainingData("07/25/2013","09/26/2013", harvest);
-		pc.generateTrainingData("07/25/2012","09/26/2012", harvest);
-		pc.generateTrainingData("07/25/2011","09/26/2011", harvest);
-		pc.generateTrainingData("07/25/2010","09/26/2010", harvest);
-		
-				//Veraison
-				String veraison = rootPath+"/src/main/webapp/veraison.xls";
-				pc.generateTrainingData("07/10/2015","07/26/2015", veraison);
-				pc.generateTrainingData("07/10/2014","07/26/2014", veraison);
-				pc.generateTrainingData("07/10/2013","07/26/2013", veraison);
-				pc.generateTrainingData("07/10/2012","07/26/2012", veraison);
-				pc.generateTrainingData("07/10/2011","07/26/2011", veraison);
-				pc.generateTrainingData("07/10/2010","07/26/2010", veraison);
-				
-				//Closure
-				String closure = rootPath+"/src/main/webapp/closure.xls";
-				pc.generateTrainingData("06/04/2015","07/11/2015", closure);
-				pc.generateTrainingData("06/04/2014","07/11/2014", closure);
-				pc.generateTrainingData("06/04/2013","07/11/2013", closure);
-				pc.generateTrainingData("06/04/2012","07/11/2012", closure);
-				pc.generateTrainingData("06/04/2011","07/11/2011", closure);
-				pc.generateTrainingData("06/04/2010","07/11/2010", closure);
-				
-				//Set
-				String set = rootPath+"/src/main/webapp/set.xls";
-				pc.generateTrainingData("05/09/2015","06/05/2015", set);
-				pc.generateTrainingData("05/09/2014","06/05/2014", set);
-				pc.generateTrainingData("05/09/2013","06/05/2013", set);
-				pc.generateTrainingData("05/09/2012","06/05/2012", set);
-				pc.generateTrainingData("05/09/2011","06/05/2011", set);
-				pc.generateTrainingData("05/09/2010","06/05/2010", set);
-				
-				//Bloom
-				String bloom = rootPath+"/src/main/webapp/bloom.xls";
-				pc.generateTrainingData("03/22/2015","05/10/2015", bloom);
-				pc.generateTrainingData("03/22/2014","05/10/2014", bloom);
-				pc.generateTrainingData("03/22/2013","05/10/2013", bloom);
-				pc.generateTrainingData("03/22/2012","05/10/2012", bloom);
-				pc.generateTrainingData("03/22/2011","05/10/2011", bloom);
-				pc.generateTrainingData("03/22/2010","05/10/2010", bloom);
-				
-				//BudBreak
-				String budbreak = rootPath+"/src/main/webapp/budbreak.xls";
-				pc.generateTrainingData("12/01/2014","03/23/2015", budbreak);
-				pc.generateTrainingData("12/01/2013","03/23/2014", budbreak);
-				pc.generateTrainingData("12/01/2012","03/23/2013", budbreak);
-				pc.generateTrainingData("12/01/2011","03/23/2012", budbreak);
-				pc.generateTrainingData("12/01/2010","03/23/2011", budbreak);
-				pc.generateTrainingData("12/01/2009","03/23/2010", budbreak);
-	}*/
-	
+
 	public void generateTrainingData(String startDate, String endDate, final String filePath, final String block){
 		try {		
 				Date sDate = null;
@@ -139,7 +71,6 @@ public class PredictionController {
 				
 				FindIterable<Document> cursor = cimisCollection.find(getQuery).sort(new Document("_id",-1));
 				
-				//if(!cursor.first().isEmpty()){
 				cursor.forEach(new Block<Document>() {
 					
 				    public void apply(Document document) {
@@ -408,7 +339,8 @@ public class PredictionController {
 								}
 								
 								BasicDBObject ratingQuery = new BasicDBObject();
-								ratingQuery.put("_id", Integer.parseInt("20"+qDate.split("/")[2]));
+								//ratingQuery.put("_id", (block+"-20"+qDate.split("/")[2]));
+								ratingQuery.put("_id", ("-20"+qDate.split("/")[2]));
 						        System.out.println("q------->"+ratingQuery);
 								FindIterable<Document> ratingCursor = ratingCollection.find(ratingQuery);
 								
@@ -594,16 +526,6 @@ public class PredictionController {
 				cell32 = row.createCell(31);
 				cell33 = row.createCell(32);
 				cell34 = row.createCell(33);
-				//cell35 = row.createCell(34);
-				//System.out.println("---------------->"+date);
-				//HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
-				
-				//CreationHelper createHelper = wb.getCreationHelper();
-				//cellStyle.setDataFormat(
-				  //  createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
-				
-				//cell1.setCellValue((Date) date);
-				//cell1.setCellStyle(cellStyle);
 				
 				cell1.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell1.setCellValue(netRadValue);

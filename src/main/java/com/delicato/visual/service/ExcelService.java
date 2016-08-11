@@ -323,13 +323,7 @@ public class ExcelService {
 				cell2 = row.createCell(1);
 				cell3 = row.createCell(2);
 				
-				//HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
-				
-				//CreationHelper createHelper = wb.getCreationHelper();
-				//cellStyle.setDataFormat(
-				    //createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
 				cell1.setCellValue(cell1.getRowIndex());
-				//cell1.setCellStyle(cellStyle);
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell2.setCellValue(relhum);
@@ -339,6 +333,64 @@ public class ExcelService {
 				cell3.setCellValue(winddir);
 				System.out.println("------------------->"+winddir);
 				FileOutputStream fileOut = new FileOutputStream(filePath+"cimis4.xls");
+				wb.write(fileOut);
+				fileOut.close();
+			}  catch (IOException e) {
+				e.printStackTrace();
+			}
+		  }
+		  public void writeToCsvforblockname(String blockname, double  tapbrix)
+	{
+			try {
+				System.out.println("inside csv--->");
+				
+				HSSFWorkbook wb = null;
+				HSSFSheet sheet = null;
+				HSSFRow row = null;
+				HSSFCell cell1 = null;
+				HSSFCell cell2 = null;
+				//HSSFCell cell3=null;
+				
+				File file = new File(filePath+"blockname.xls");
+				if(file.exists()){
+					InputStream inp = new FileInputStream(file);
+					 
+					wb = new HSSFWorkbook(inp);
+					sheet = wb.getSheetAt(0);
+					
+					
+				}else{
+					wb = new HSSFWorkbook();
+			         sheet = wb.createSheet();
+			         row = sheet.createRow(0);
+					
+					 cell1 = row.createCell(1);
+					 cell1.setCellValue("blockname");
+					 cell2 = row.createCell(2);
+					 cell2.setCellValue("tapbrix");
+				} 
+				
+				row = sheet.createRow(sheet.getLastRowNum()+1);
+				cell1 = row.createCell(0);
+				cell2 = row.createCell(1);
+				//cell3=row.createCell(2);
+				HSSFCellStyle cellStyle = (HSSFCellStyle) wb.createCellStyle();
+				
+				CreationHelper createHelper = wb.getCreationHelper();
+				/*cellStyle.setDataFormat(
+				    createHelper.createDataFormat().getFormat("yyyy-MM-dd"));
+				cell1.setCellValue((Date) date);
+				cell1.setCellStyle(cellStyle);*/
+				
+				
+				cell1.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell1.setCellValue(blockname);
+				System.out.println("------------------->"+blockname);
+				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
+				cell2.setCellValue(tapbrix);
+				System.out.println("------------------->"+tapbrix);
+				
+				FileOutputStream fileOut = new FileOutputStream(filePath+"blockname.xls");
 				wb.write(fileOut);
 				fileOut.close();
 			}  catch (IOException e) {
