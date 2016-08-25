@@ -32,7 +32,7 @@ public class CompareData {
 	SpringMongoConfig mongoConfig;
 	MongoClient mongoClient;
 	
-	private CompareData(String mongolink){
+	public CompareData(String mongolink){
 		
 		mongoClient = mongoConfig.getMongoClient(mongolink);
 		mongoConfig = new SpringMongoConfig();
