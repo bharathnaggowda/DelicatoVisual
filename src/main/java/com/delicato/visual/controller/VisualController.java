@@ -1,12 +1,18 @@
 package com.delicato.visual.controller;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.rosuda.REngine.Rserve.RConnection;
 import org.springframework.stereotype.Controller;
@@ -16,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.delicato.visual.config.SpringMongoConfig;
 import com.delicato.visual.model.Factors;
+import com.delicato.visual.service.CimisToMongodb;
 import com.delicato.visual.service.CompareData;
 import com.delicato.visual.service.CsvService;
 import com.delicato.visual.service.DataService;
@@ -25,6 +32,26 @@ import com.delicato.visual.service.SurvivalModel;
 @RequestMapping("/")
 public class VisualController {
 		
+	private final Properties configProp = new Properties();
+	int comparision_start_year;
+	int comparision_end_year;
+	String mongolink;
+	CompareData compareData;
+	
+	private VisualController(){
+		InputStream in = this.getClass().getClassLoader().getResourceAsStream("config.properties");
+	      System.out.println("Read all properties from file");
+	      try {
+	          configProp.load(in);
+	          comparision_start_year = Integer.parseInt(configProp.getProperty("comparision_start_year"));
+	          comparision_end_year = Integer.parseInt(configProp.getProperty("comparision_end_year"));
+	          mongolink = configProp.getProperty("mongolink");
+	          
+	          compareData = new CompareData(mongolink);
+	      } catch (IOException e) {
+	          e.printStackTrace();
+	      }
+	}
 	SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 	SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
@@ -33,10 +60,11 @@ public class VisualController {
 	SurvivalModel survivalModel = new SurvivalModel();
 	SpringMongoConfig mongoConfig=new SpringMongoConfig();
 	CsvService csvService = new CsvService();
-	CompareData compareData = new CompareData();
+	CimisToMongodb cimisToMongodb = new CimisToMongodb();
 	
 	String rootPath =System.getProperty("user.dir");
 	File rScript = new File(rootPath+"/src/main/webapp/rQuery.txt");
+	File folder = new File(rootPath+"/src/main/webapp");
 	List<String> sortedBlocksList;
 	List<String> sortedGrapesList;
 	
@@ -50,9 +78,12 @@ public class VisualController {
 		sortedGrapesList = new ArrayList<String>(dataService.getGrapeVeriety());
 		Collections.sort(sortedGrapesList);
 		model.addAttribute("grapes", sortedGrapesList);
-		for(String c :sortedGrapesList){
-			System.out.println(c);
-		}
+		
+		  for (File file : folder.listFiles()) {
+		   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+		    file.delete();
+		   }
+		  }
 		
 		return "home";
 	}
@@ -61,6 +92,11 @@ public class VisualController {
 	@RequestMapping(value="/degreedays", method=RequestMethod.POST)
 	public String degreedays(Factors factors, Model model) 
 	{		
+		for (File file : folder.listFiles()) {
+			   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+			    file.delete();
+			   }
+			  }
 		Date sDate = null;
 		Date eDate = null;
 		int minTempTheshold = Integer.MIN_VALUE;
@@ -79,7 +115,7 @@ public class VisualController {
 			if(factors.getMinHumTheshold() != "") minHumTheshold = Integer.parseInt(factors.getMinHumTheshold());
 			if(factors.getMaxWindTheshold() != "") maxWindTheshold = Integer.parseInt(factors.getMaxWindTheshold());
 			
-			System.out.println(sDate+"--");
+			//System.out.println(sDate+"--");
 			
 			dataService.getCimisData(sDate, eDate, minTempTheshold, maxTempTheshold, minHumTheshold, maxWindTheshold);
 			
@@ -100,6 +136,11 @@ public class VisualController {
 	@RequestMapping(value="/cimis", method=RequestMethod.POST)
 	public String cimisGraphs(Factors factors, Model model) 
 	{
+		for (File file : folder.listFiles()) {
+			   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+			    file.delete();
+			   }
+			  }
 		Date sDate = null;
 		Date eDate = null;
 
@@ -111,8 +152,14 @@ public class VisualController {
 			sDate = format.parse(factors.getStartdate());
 			eDate = format.parse(factors.getEnddate());
 			
-			dataService.getCimisDataForGraphs(sDate, eDate, airtemp, dewpoint, relhum, soiltemp, vappres, windspeed, winddir);
+			HashMap<String, ArrayList<Double>> windRose = dataService.getCimisDataForGraphs(sDate, eDate, airtemp, dewpoint, relhum, soiltemp, vappres, windspeed, winddir);
 			
+			Iterator it = windRose.entrySet().iterator();
+		    while (it.hasNext()) {
+		        Map.Entry pair = (Map.Entry)it.next();
+		        model.addAttribute(pair.getKey().toString(), pair.getValue());
+		        System.out.println("------>"+pair.getKey()+"    "+pair.getValue());
+		    }
 			model.addAttribute("startdate", factors.getStartdate());
 			model.addAttribute("enddate", factors.getEnddate());
 			
@@ -126,6 +173,7 @@ public class VisualController {
 	@RequestMapping(value="/cimissubgraph", method=RequestMethod.POST)
 	public String cimisCimisSubGraph(Factors factors, Model model) throws ParseException 
 	{
+		
 		model.addAttribute("blocks", sortedBlocksList);
 		model.addAttribute("grapes", sortedGrapesList);
 		Date gDate=null;
@@ -147,18 +195,20 @@ public class VisualController {
 	@RequestMapping(value="/comparisions", method=RequestMethod.POST)
 	public String comparisions(Factors factors, Model model) 
 	{
+		for (File file : folder.listFiles()) {
+			   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+			    file.delete();
+			   }
+			  }
 		model.addAttribute("blocks", sortedBlocksList);
 		model.addAttribute("grapes", sortedGrapesList);
 		String block = factors.getBlock();
 		
 		try {
-			compareData.generateIndividualGraphs(block, "01/01/2010", "12/01/2010", "2010", "dyostemCompare2010");
-			compareData.generateIndividualGraphs(block, "01/01/2011", "12/01/2011", "2011", "dyostemCompare2011");
-			compareData.generateIndividualGraphs(block, "01/01/2012", "12/01/2012", "2012", "dyostemCompare2012");
-			compareData.generateIndividualGraphs(block, "01/01/2013", "12/01/2013", "2013", "dyostemCompare2013");
-			compareData.generateIndividualGraphs(block, "01/01/2014", "12/01/2014", "2014", "dyostemCompare2014");
-			compareData.generateIndividualGraphs(block, "01/01/2015", "12/01/2015", "2015", "dyostemCompare2015");
-			compareData.generateIndividualGraphs(block, "01/01/2016", "12/01/2016", "2016", "dyostemCompare2016");
+			
+			for(int i=comparision_start_year ; i<comparision_end_year ; i++){
+				compareData.generateIndividualGraphs(block, "01/01/"+i, "12/01/"+i, i, "dyostemCompare"+i);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -170,6 +220,11 @@ public class VisualController {
 	@RequestMapping(value="/blocknames", method=RequestMethod.POST)
 	public String dyostemblockname(Factors factors, Model model) throws ParseException 
 	{
+		for (File file : folder.listFiles()) {
+			   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+			    file.delete();
+			   }
+			  }
 		String grapename=null;
 		String blockname="";
 	     double tapbrix=0;
@@ -183,6 +238,7 @@ public class VisualController {
 			
 			model.addAttribute("grapename",factors.getGrapename());
 			//model.addAttribute("givendate",factors.getGivendate());
+			model.addAttribute("selectedgrape", grapename);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -193,6 +249,12 @@ public class VisualController {
 	public String predictions(Factors factors, Model model) 
 	{
 		try{
+			for (File file : folder.listFiles()) {
+				   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+				    file.delete();
+				   }
+				  }
+			
 			model.addAttribute("blocks", sortedBlocksList);
 			model.addAttribute("grapes", sortedGrapesList);
 			String block = factors.getBlock();
@@ -392,9 +454,7 @@ public class VisualController {
 				if(!con.isConnected()) con = mongoConfig.getRconnection();
 				List<Double> predValueBloom = survivalModel.generateModel(con, rScript, bloom, bloomCurrent);
 				if(predValueBloom != null){
-					for(int i = 0; i< predValueBloom.size(); i++){
-						System.out.println("------>"+predValueBloom.get(i));
-					}
+					
 					model.addAttribute("predValueBloom", String.format( "%.2f", predValueBloom.get(0)));
 					model.addAttribute("predValueBloomOne", predValueBloom.get(1).intValue());
 					model.addAttribute("predValueBloomTwo", predValueBloom.get(2).intValue());
@@ -469,5 +529,19 @@ public class VisualController {
 			return "home";
 	}
 	
+	@RequestMapping(value="/cimisupdate", method=RequestMethod.POST)
+	public String updatecimis(Factors factors, Model model) 
+	{
+		//System.out.println("--->inside /cimisupdate");
+		cimisToMongodb.getCimisData();
+		model.addAttribute("blocks", sortedBlocksList);
+		
+		model.addAttribute("grapes", sortedGrapesList);
+		for(String c :sortedGrapesList){
+			//System.out.println(c);
+		}
+		
+		return "home";
+	}
 
 }

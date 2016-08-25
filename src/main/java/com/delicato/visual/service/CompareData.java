@@ -28,11 +28,17 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 public class CompareData {
+	
+	SpringMongoConfig mongoConfig;
+	MongoClient mongoClient;
+	
+	private CompareData(String mongolink){
+		
+		mongoClient = mongoConfig.getMongoClient(mongolink);
+		mongoConfig = new SpringMongoConfig();
+	}
 
 	CsvService csvService = new CsvService();
-	
-	SpringMongoConfig mongoConfig=new SpringMongoConfig();
-	MongoClient mongoClient=mongoConfig.getMongoClient();
 	MongoDatabase db = mongoClient.getDatabase("delicato");
 	MongoCollection<Document> cimisCollection = db.getCollection("cimisdata");
 	MongoCollection<Document> dyostemCollectionnew = db.getCollection("dyostemdatanew");
@@ -45,15 +51,15 @@ public class CompareData {
     
     SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
     
-	public void generateIndividualGraphs(String block, String sDate, String eDate, String year, final String newFile) {
+	public void generateIndividualGraphs(String block, String sDate, String eDate, int year, final String newFile) {
 		
-		final String tapBrixXls = "tapBrix"+newFile+".xls";
+		final String tapBrixXls = "tb"+newFile+".xls";
 		final File tapBrixXlsFile = new File(filePath+tapBrixXls);
-		final String tapBrixCsv = "tapBrix"+newFile+".csv";
+		final String tapBrixCsv = "tb"+newFile+".csv";
 		final File tapBrixCsvFile = new File(filePath+tapBrixCsv);
-		final String sugQuantXls = "sugQuant"+newFile+".xls";
+		final String sugQuantXls = "sq"+newFile+".xls";
 		final File sugQuantXlsFile = new File(filePath+sugQuantXls);
-		final String sugQuantCsv = "sugQuant"+newFile+".csv";
+		final String sugQuantCsv = "sq"+newFile+".csv";
 		final File sugQuantCsvFile = new File(filePath+sugQuantCsv);
 		final String phXls = "ph"+newFile+".xls";
 		final File phXlsFile = new File(filePath+phXls);
@@ -84,12 +90,12 @@ public class CompareData {
 	    try {
 			getQuery.put("Date of Analysis", new BasicDBObject("$gte", format.parse(sDate)).append("$lte", format.parse(eDate)));
 			
-			System.out.println("dates--------->"+getQuery);
+			//System.out.println("dates--------->"+getQuery);
 			FindIterable<Document> cursor = dyostemCollectionnew.find(getQuery).sort(new Document("_id",1));
 			//if(!cursor.first().isEmpty()){
 				cursor.forEach(new Block<Document>() {
 					public void apply(Document document) {
-						System.out.println("vvvvvvvvvvvvvvvvvvvvvv------------->"+document);
+						//System.out.println("vvvvvvvvvvvvvvvvvvvvvv------------->"+document);
 						 
 						Date dateOfAnalysis = null;
 						Double tapBrix = null;
@@ -98,7 +104,7 @@ public class CompareData {
 						 if(document.get("Date of Analysis") != null && document.get("Date of Analysis") != ""){
 								 dateOfAnalysis = (Date) document.get("Date of Analysis");
 							}
-						 System.out.println("dateOfAnalysis->"+dateOfAnalysis);
+						 //System.out.println("dateOfAnalysis->"+dateOfAnalysis);
 						 if(document.get("TAP Brix") != null && document.get("TAP Brix") != ""){
 								if(document.get("TAP Brix") instanceof Double)
 									tapBrix =  (Double) document.get("TAP Brix");
@@ -153,11 +159,11 @@ public class CompareData {
 			}else{
 				wb = new HSSFWorkbook();
 		         sheet = wb.createSheet();
-		         row = sheet.createRow(0);
-				 cell1 = row.createCell(0);
-				 cell1.setCellValue("Date");
-				 cell2 = row.createCell(1);
-				 cell2.setCellValue("Tap Brix");
+		         //row = sheet.createRow(0);
+				 //cell1 = row.createCell(0);
+				 //cell1.setCellValue("Date");
+				 //cell2 = row.createCell(1);
+				 //cell2.setCellValue("Tap Brix");
 			} 
 			
 			row = sheet.createRow(sheet.getLastRowNum()+1);

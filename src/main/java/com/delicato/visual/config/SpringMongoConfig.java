@@ -8,10 +8,11 @@ import com.mongodb.MongoClientURI;
 
 public class SpringMongoConfig {
     
-    public MongoClient getMongoClient() {
+    public MongoClient getMongoClient(String link) {
     	MongoClient mongoClient=null ;
-    	String link ="mongodb://localhost:27017/delicato";
+    	//String link ="mongodb://localhost:27017/delicato";
     	//String link ="mongodb://bharathnaggowda:mongoPa$$@ds015939.mlab.com:15939/delicato";
+    	//String link ="mongodb://admin:GU2Sc5FqmqBw@ds015939.mlab.com:15939/delicuatoanalytics";
     	MongoClientURI uri =new MongoClientURI(link);
     	
     	try{
@@ -28,7 +29,6 @@ public class SpringMongoConfig {
 		try {
 			con =  new RConnection("localhost", 6311);
 		} catch (RserveException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return con;

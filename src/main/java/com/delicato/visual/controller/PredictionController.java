@@ -74,7 +74,7 @@ public class PredictionController {
 				cursor.forEach(new Block<Document>() {
 					
 				    public void apply(Document document) {
-				        System.out.println("inside doc");
+				        //System.out.println("inside doc");
 				        String date = "";
 				        Document a = (Document) document.get("hourlydata");
 				        ArrayList contents = (ArrayList) a.get("Records");
@@ -194,11 +194,11 @@ public class PredictionController {
 						        BasicDBObject dyostemQuery = new BasicDBObject();
 						        dyostemQuery.put("Date of Analysis", qDate);
 						        dyostemQuery.put("Name of block", block);
-						        System.out.println("date for query"+qDate+"---->"+dyostemQuery);
+						        //System.out.println("date for query"+qDate+"---->"+dyostemQuery);
 								FindIterable<Document> cursor = dyostemCollection.find(dyostemQuery);
 								
 								Document match = cursor.first();
-								System.out.println("date for query"+match);
+								//System.out.println("date for query"+match);
 								if(match != null){
 									
 									matchFound = true;
@@ -337,22 +337,26 @@ public class PredictionController {
 												berryCount =  (double) (Integer) match.get("Berries count");
 										}
 								}
-								
-								BasicDBObject ratingQuery = new BasicDBObject();
-								//ratingQuery.put("_id", (block+"-20"+qDate.split("/")[2]));
-								ratingQuery.put("_id", ("-20"+qDate.split("/")[2]));
-						        System.out.println("q------->"+ratingQuery);
-								FindIterable<Document> ratingCursor = ratingCollection.find(ratingQuery);
-								
-								Document ratingMatch = ratingCursor.first();
-								System.out.println("q------->"+ratingMatch);
-								Double rating = ratingMatch.getDouble("rating");
+								try{
+									BasicDBObject ratingQuery = new BasicDBObject();
+									ratingQuery.put("_id", (block+"-20"+qDate.split("/")[2]));
+									//ratingQuery.put("_id", ("-20"+qDate.split("/")[2]));
+							        System.out.println("q------->"+ratingQuery);
+									FindIterable<Document> ratingCursor = ratingCollection.find(ratingQuery);
 									
-									writeToXls(matchFound, d, netRadValue, relHumValue, vapPresValue, windDirValue, etoValue, asceEtrValue, airTmpValue,
-							        		dewPntValue, precipValue, windSpdValue, resWindValue, solRadValue, soilTmpValue, asceEtoValue,
-							        		confIndexProfile, confIndexBehav, evolOfTheVol, tapCutOfDate, indexOfGlobalConf,
-							        		medHue, hue1st, hue9th, avgVol, volStdDev, sugQuant, sugConc, tapBrix,
-							        		acidity, malicAcid, ph, azoteAssi, avgBerryWeight, berryCount, rating, filePath);
+									Document ratingMatch = ratingCursor.first();
+									System.out.println("q------->"+ratingMatch);
+									Double rating = ratingMatch.getDouble("rating");
+										
+										writeToXls(matchFound, d, netRadValue, relHumValue, vapPresValue, windDirValue, etoValue, asceEtrValue, airTmpValue,
+								        		dewPntValue, precipValue, windSpdValue, resWindValue, solRadValue, soilTmpValue, asceEtoValue,
+								        		confIndexProfile, confIndexBehav, evolOfTheVol, tapCutOfDate, indexOfGlobalConf,
+								        		medHue, hue1st, hue9th, avgVol, volStdDev, sugQuant, sugConc, tapBrix,
+								        		acidity, malicAcid, ph, azoteAssi, avgBerryWeight, berryCount, rating, filePath);
+								}catch(Exception e){
+									e.printStackTrace();
+								}
+								
 				        	}
 					        
 					        
@@ -366,7 +370,7 @@ public class PredictionController {
 				});
 		//}
 				//vc.xlsToCsv(inputFile, outputFile);
-				System.out.println("completed");
+				//System.out.println("completed");
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -401,7 +405,7 @@ public class PredictionController {
 			 berryCountP = berryCount ;
 		}
 			try {
-				System.out.println("inside csv--->");
+				//System.out.println("inside csv--->");
 				
 				HSSFWorkbook wb = null;
 				HSSFSheet sheet = null;

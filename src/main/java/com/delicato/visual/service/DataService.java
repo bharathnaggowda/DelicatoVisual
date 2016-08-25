@@ -5,7 +5,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.bson.Document;
 
@@ -15,7 +18,6 @@ import com.mongodb.Block;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 public class DataService {
@@ -35,6 +37,8 @@ public class DataService {
 	SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 	HashSet<String> blocks = new HashSet<String>();
 	HashSet<String> grapes = new HashSet<String>();
+	
+	public static HashMap<String, ArrayList<Double>> windRose;
 	
 	public HashSet<String> getBlocks() {
 		
@@ -98,7 +102,7 @@ public class DataService {
 			cursor.forEach(new Block<Document>() {
 				
 			    public void apply(Document document) {
-			        System.out.println("inside doc");
+			        //System.out.println("inside doc");
 			        String date = "";
 			        Document a = (Document) document.get("hourlydata");
 			        ArrayList contents = (ArrayList) a.get("Records");
@@ -115,7 +119,7 @@ public class DataService {
 				        Document humidity = (Document) doc.get("HlyRelHum");
 				        
 				        date = (String) doc.get("Date");
-				        System.out.println("Wind--> "+windSpeed.get("Value")+"--"+"Humidity--> "+humidity.get("Value"));
+				        //System.out.println("Wind--> "+windSpeed.get("Value")+"--"+"Humidity--> "+humidity.get("Value"));
 				        if(temp.get("Value") != null && temp.get("Value") != "" &&
 				        		windSpeed.get("Value") != null && windSpeed.get("Value") != "" &&
 				        				humidity.get("Value") != null && humidity.get("Value") != ""){
@@ -136,8 +140,8 @@ public class DataService {
 				        }
 			        }
 			        //degree = degree/daysCount;
-			        System.out.println("daysCount----->"+daysCount);
-			        System.out.println(degree);
+			        //System.out.println("daysCount----->"+daysCount);
+			        //System.out.println(degree);
 			        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 					Date d = null;
 					String dat = null;
@@ -152,11 +156,13 @@ public class DataService {
 			});
 			
 			csvService.xlsToCsvDegreeDays(inputFile, outputFile);
-			System.out.println("completed");
+			//System.out.println("completed");
 		}
 	
-	public void getCimisDataForGraphs(Date sDate, Date eDate, double airtemp, double dewpoint, double relhum, double soiltemp, double vappres, double windspeed, double winddir ){
+	public HashMap<String, ArrayList<Double>> getCimisDataForGraphs(Date sDate, Date eDate, double airtemp, double dewpoint, double relhum, double soiltemp, double vappres, double windspeed, double winddir ){
 		
+		windRose = new HashMap<String, ArrayList<Double>>();
+				
 		File inputFile = new File(filePath+"cimis1.xls");
 		File outputFile = new File(filePath+"cimis1.csv");
 		File inputFile1 = new File(filePath+"cimis3.xls");
@@ -199,7 +205,7 @@ public class DataService {
 			cursor.forEach(new Block<Document>() {
 				
 			    public void apply(Document document) {
-			        System.out.println("inside doc");
+			        //System.out.println("inside doc");
 			        String date = "";
 			        Document a = (Document) document.get("hourlydata");
 			        ArrayList contents = (ArrayList) a.get("Records");
@@ -265,13 +271,153 @@ public class DataService {
 			        
 			        xlsService.writeToXlsCimisFirstGraph(dat, airtemp1,dewpoint1,vappres1,windspeed1,soiltemp1 );
 			        xlsService.writeToXlsCimisSecGraph(dat,relhum1 ,winddir1 );
+			        addToHashMap(winddir1,windspeed1);
+			        
 			        
 			    }
 			});
 			
 			csvService.xlsToCsv(inputFile, outputFile);
 			csvService.xlsToCsv(inputFile1, outputFile1);
-			System.out.println("completed");
+			//System.out.println("completed");
+			
+			return windRose;
+	}
+	
+	
+	
+	public HashMap<String, ArrayList<Double>> addToHashMap(double winddir1, double windspeed1){
+		
+		if(winddir1 < 11.25 && winddir1 > 348.75){
+			if(windRose.containsKey("N")){
+				windRose.get("N").add(windspeed1);
+			}
+			else{
+				windRose.put("N", new ArrayList<Double>());
+				windRose.get("N").add(windspeed1);
+			}
+		}else if(winddir1 > 11.25 && winddir1 < 33.75){
+			if(windRose.containsKey("NNE")){
+				windRose.get("NNE").add(windspeed1);
+			}
+			else{
+				windRose.put("NNE", new ArrayList<Double>());
+				windRose.get("NNE").add(windspeed1);
+			}
+		}else if(winddir1 > 33.75 && winddir1 < 56.25){
+			if(windRose.containsKey("NE")){
+				windRose.get("NE").add(windspeed1);
+				}
+				else{
+				windRose.put("NE", new ArrayList<Double>());
+				windRose.get("NE").add(windspeed1);
+				}
+				}else if(winddir1 > 56.25 && winddir1 < 78.75){
+				if(windRose.containsKey("ENE")){
+				windRose.get("ENE").add(windspeed1);
+				}
+				else{
+				windRose.put("ENE", new ArrayList<Double>());
+				windRose.get("ENE").add(windspeed1);
+				}
+				}else if(winddir1 > 78.75 && winddir1 < 101.25){
+				if(windRose.containsKey("E")){
+				windRose.get("E").add(windspeed1);
+				}
+				else{
+				windRose.put("E", new ArrayList<Double>());
+				windRose.get("E").add(windspeed1);
+				}
+				}else if(winddir1 > 101.25 && winddir1 < 123.75){
+				if(windRose.containsKey("ESE")){
+				windRose.get("ESE").add(windspeed1);
+				}
+				else{
+				windRose.put("ESE", new ArrayList<Double>());
+				windRose.get("ESE").add(windspeed1);
+				}
+				}else if(winddir1 > 123.75 && winddir1 < 146.25){
+				if(windRose.containsKey("SE")){
+				windRose.get("SE").add(windspeed1);
+				}
+				else{
+				windRose.put("SE", new ArrayList<Double>());
+				windRose.get("SE").add(windspeed1);
+				}
+				}else if(winddir1 > 146.25 && winddir1 < 168.75){
+				if(windRose.containsKey("SSE")){
+				windRose.get("SSE").add(windspeed1);
+				}
+				else{
+				windRose.put("SSE", new ArrayList<Double>());
+				windRose.get("SSE").add(windspeed1);
+				}
+				}else if(winddir1 > 168.75 && winddir1 < 191.25){
+				if(windRose.containsKey("S")){
+				windRose.get("S").add(windspeed1);
+				}
+				else{
+				windRose.put("S", new ArrayList<Double>());
+				windRose.get("S").add(windspeed1);
+				}
+				}else if(winddir1 > 191.25 && winddir1 < 213.75){
+				if(windRose.containsKey("SSW")){
+				windRose.get("SSW").add(windspeed1);
+				}
+				else{
+				windRose.put("SSW", new ArrayList<Double>());
+				windRose.get("SSW").add(windspeed1);
+				}
+				}else if(winddir1 > 213.75 && winddir1 < 236.25){
+				if(windRose.containsKey("SW")){
+				windRose.get("SW").add(windspeed1);
+				}
+				else{
+				windRose.put("SW", new ArrayList<Double>());
+				windRose.get("SW").add(windspeed1);
+				}
+				}else if(winddir1 > 236.25 && winddir1 < 258.75){
+				if(windRose.containsKey("WSW")){
+				windRose.get("WSW").add(windspeed1);
+				}
+				else{
+				windRose.put("WSW", new ArrayList<Double>());
+				windRose.get("WSW").add(windspeed1);
+				}
+				}else if(winddir1 > 258.75 && winddir1 < 281.25){
+				if(windRose.containsKey("W")){
+				windRose.get("W").add(windspeed1);
+				}
+				else{
+				windRose.put("W", new ArrayList<Double>());
+				windRose.get("W").add(windspeed1);
+				}
+				}else if(winddir1 > 281.25 && winddir1 < 303.75){
+				if(windRose.containsKey("WNW")){
+				windRose.get("WNW").add(windspeed1);
+				}
+				else{
+				windRose.put("WNW", new ArrayList<Double>());
+				windRose.get("WNW").add(windspeed1);
+				}
+				}else if(winddir1 > 303.75 && winddir1 < 326.25){
+				if(windRose.containsKey("NW")){
+				windRose.get("NW").add(windspeed1);
+				}
+				else{
+				windRose.put("NW", new ArrayList<Double>());
+				windRose.get("NW").add(windspeed1);
+				}
+				}else if(winddir1 > 326.25 && winddir1 < 348.75){
+				if(windRose.containsKey("NNW")){
+				windRose.get("NNW").add(windspeed1);
+				}
+				else{
+				windRose.put("NNW", new ArrayList<Double>());
+				windRose.get("NNW").add(windspeed1);
+				}}
+		
+		return windRose;
 	}
 	
 	public void getCimisDataForSubGraph(double airtemp, double dewpoint, double relhum, double soiltemp, double vappres, double windspeed, double winddir, Date gDate ){
@@ -296,14 +442,14 @@ public class DataService {
 			
 			BasicDBObject getQuery = new BasicDBObject();
 		    getQuery.put("_id", gDate);
-		    System.out.println("qqqqqqq"+gDate);
+		    //System.out.println("qqqqqqq"+gDate);
 			FindIterable<Document> cursor = cimisCollection.find(getQuery);
 			
 			cursor.forEach(new Block<Document>() {
 				
 			    public void apply(Document document) {
 			    	
-			        System.out.println("inside doc");
+			        //System.out.println("inside doc");
 			        String date = "";
 			        Document a = (Document) document.get("hourlydata");
 			        ArrayList contents = (ArrayList) a.get("Records");
@@ -324,7 +470,7 @@ public class DataService {
 				        Document winddir=(Document) doc.get("HlyWindDir");
 				        date = (String) doc.get("Date");
 				        
-				        System.out.println("airtemp--> "+airtemp.get("Value")+"--"+"dewpoint--> "+dewpoint.get("Value")+"--"+"windspeed--> "+windspeed.get("Value")+"--"+"vappres--> "+vappres.get("Value")+"--"+"relhum--> "+relhum.get("Value")+"--"+"soiltemp--> "+soiltemp.get("Value")+"winddir--> "+winddir.get("Value"));
+				        //System.out.println("airtemp--> "+airtemp.get("Value")+"--"+"dewpoint--> "+dewpoint.get("Value")+"--"+"windspeed--> "+windspeed.get("Value")+"--"+"vappres--> "+vappres.get("Value")+"--"+"relhum--> "+relhum.get("Value")+"--"+"soiltemp--> "+soiltemp.get("Value")+"winddir--> "+winddir.get("Value"));
 				       if(airtemp.get("Value") != null && airtemp.get("Value") != "" &&
 				        		dewpoint.get("Value") != null && dewpoint.get("Value") != "" &&
 				        				relhum.get("Value") != null && relhum.get("Value") != "" &&
@@ -357,7 +503,7 @@ public class DataService {
 				        try {
 							d = dateFormat.parse(date);
 							dat = sdf.format(d);
-							System.out.println("sssssssssssssssssssdate---------->"+d);
+							//System.out.println("sssssssssssssssssssdate---------->"+d);
 						} catch (ParseException e) {
 							e.printStackTrace();
 						}
@@ -371,7 +517,8 @@ public class DataService {
 			csvService.xlsToCsv(inputFile1, outputFile1);
 			System.out.println("completed2");
 		}
-public void getblockname(String blockname, String grapename,double tapbrix){
+	
+public void getblockname( String blockname, String grapename, double tapbrix){
 		
 		File inputFile = new File(filePath+"blockname.xls");
 	    File outputFile = new File(filePath+"blockname.csv");
@@ -388,31 +535,28 @@ public void getblockname(String blockname, String grapename,double tapbrix){
 			BasicDBObject dyostemQuery = new BasicDBObject();
 	        //dyostemQuery.put("Date of Analysis", qDate);
 	        dyostemQuery.put("Grape variety", grapename);
-	        System.out.println("grapename---"+grapename+"---->"+dyostemQuery);
+	        //System.out.println("grapename---"+grapename+"---->"+dyostemQuery);
 	        //FindIterable<Document> cursor = dyostemCollection.find(dyostemQuery);
-			try (MongoCursor<Document> cur = dyostemCollection.find(dyostemQuery).iterator()) {
-	            while (cur.hasNext()) {
-
-	                Document doc = cur.next();
-	                
-	                ArrayList list = new ArrayList(doc.values());
-	                System.out.println(list.get(6));
-	                if(!list.get(6).toString().trim().equals("") && list.get(6) != null && !(list.get(6) instanceof Integer)){
-	                	tapbrix= (double) list.get(6);
-	                }else if(list.get(6) instanceof Integer){
-	                	tapbrix=  (Integer) list.get(6);
+	        
+			FindIterable<Document> cursor = dyostemCollection.find(dyostemQuery);
+			
+			cursor.forEach(new Block<Document>() {
+				public void apply(Document document) {
+			    	
+					String blockname;
+					double tapbrix = 0;
+			        //Object value = document.get("TAP Brix");
+			        if(!document.get("TAP Brix").toString().trim().equals("") && document.get("TAP Brix") != null && !(document.get("TAP Brix") instanceof Integer)){
+	                	tapbrix= Double.parseDouble(document.get("TAP Brix").toString());
+	                }else if(document.get("TAP Brix") instanceof Integer){
+	                	tapbrix=  (Integer) document.get("TAP Brix");
 	                }
 	                	
-	                blockname=(String) list.get(1);
-	                grapename=(String) list.get(2);
-	                System.out.print(list.get(1));
-	                System.out.print(": ");
-	                System.out.println(list.get(2));
-	                System.out.print(": ");
-	                System.out.println(list.get(6));
+	                blockname=(String) document.get("Name of block");
 	                xlsService.writeToCsvforblockname( blockname,tapbrix);
-	            }
-	        }
+				}
+			});
+			
 			
 			/*SimpleDateFormat dFormat = new SimpleDateFormat("MM/dd/yy");
 				Date d = null;
@@ -429,7 +573,7 @@ public void getblockname(String blockname, String grapename,double tapbrix){
 			   
 			csvService.xlsToCsvDyostem(inputFile, outputFile);
 			
-			System.out.println("completedblocknames");
+			//System.out.println("completedblocknames");
 		}
 	
 }

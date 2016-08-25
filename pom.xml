@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.295.visual</groupId>
-  <artifactId>delicatoAug9</artifactId>
+  <artifactId>delicatoanalytics</artifactId>
   <packaging>war</packaging>
   <version>1</version>
   <name>delicato Maven Webapp</name>
@@ -113,7 +113,11 @@
     <artifactId>Rserve</artifactId>
     <version>1.8.1</version>
 </dependency>
-	
+	<dependency>
+	<groupId>com.google.code.gson</groupId>
+	<artifactId>gson</artifactId>
+	<version>2.6.2</version>
+</dependency>
   </dependencies>
   <build>
     <finalName>delicato</finalName>

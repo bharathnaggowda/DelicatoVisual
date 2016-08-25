@@ -54,6 +54,7 @@
 		<!-- 1. Add these JavaScript inclusions in the head of your page -->
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+	<script src="https://code.highcharts.com/highcharts-more.js"></script>
 	<script src="https://code.highcharts.com/modules/data.js"></script>
 	<script src="https://code.highcharts.com/modules/boost.js"></script>
 	<script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -63,18 +64,90 @@
 <script src="https://www.highcharts.com/samples/static/highslide-full.min.js"></script>
 <script src="https://www.highcharts.com/samples/static/highslide.config.js" charset="utf-8"></script>
  
+<script type="text/javascript">
+ $(function () {
+
+	    // Parse the data from an inline table using the Highcharts Data plugin
+	    var chart = new Highcharts.Chart({
+	    
+	        data: {
+	            table: 'freq',
+	            startRow: 1,
+	            endRow: 17,
+	            endColumn: 7
+	        },
+
+	        chart: {
+	            polar: true,
+	            type: 'column',
+	            renderTo: 'windrosecontainer'
+	        },
+
+	        title: {
+	            text: 'Wind rose'
+	        },
+
+	        subtitle: {
+	            text: 'Source: cimis'
+	        },
+
+	        pane: {
+	            size: '85%'
+	        },
+
+	        legend: {
+	            align: 'right',
+	            verticalAlign: 'top',
+	            y: 100,
+	            layout: 'vertical'
+	        },
+
+	        xAxis: {
+	            tickmarkPlacement: 'on'
+	        },
+
+	        yAxis: {
+	            min: 0,
+	            endOnTick: false,
+	            showLastLabel: true,
+	            title: {
+	                text: 'Frequency (%)'
+	            },
+	            labels: {
+	                formatter: function () {
+	                    return this.value + '%';
+	                }
+	            },
+	            reversedStacks: false
+	        },
+
+	        tooltip: {
+	            valueSuffix: '%'
+	        },
+
+	        plotOptions: {
+	            series: {
+	                stacking: 'normal',
+	                shadow: false,
+	                groupPadding: 0,
+	                pointPlacement: 'on'
+	            }
+	        }
+	    });
+	});
+ </script>
  <script type="text/javascript">
 $(document).ready(function() {
    
     
-var series1 = { color:'#E5A6CB',data: [], name: 'Tap Brix(2010)' };
-var series2=  { data: [], name: 'Tap Brix(2011)'};
-var series3=  { data: [], name: 'Tap Brix(2012)' };
-var series4=  { data: [], name: 'Tap Brix(2013)' };
-var series5=  { data: [], name: 'Tap Brix(2014)' };
-var series6=  { data: [], name: 'Tap Brix(2015)' };
+var series1 = { color:'#FF3F33',data: [], name: 'Tap Brix(2010)' };
+var series2=  { color:'#FFF933',data: [], name: 'Tap Brix(2011)'};
+var series3=  { color:'#33FF5B',data: [], name: 'Tap Brix(2012)' };
+var series4=  { color:'#3393FF',data: [], name: 'Tap Brix(2013)' };
+var series5=  { color:'#FF33FF',data: [], name: 'Tap Brix(2014)' };
+var series6=  { color:'#030003',data: [], name: 'Tap Brix(2015)' };
     // Read datafile
-   $.get('dyostemCompare2010.csv', function(data) {
+   $.get('tbdyostemCompare2010.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -85,29 +158,30 @@ var series6=  { data: [], name: 'Tap Brix(2015)' };
 
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-           if(lineNo>0){
+           
             t=items[0];
            // var x = JSON.parse(t);
           
             var d=new Date(t);
             
             //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2010"+d);
             var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
-            //alert(utcdate);
+            //alert("dyostemCompare2010"+utcdate);
 
             val1=parseFloat(items[1]);
             
             // Add to series if conversion was successful
             if(!isNaN(val1)) series1.data.push([utcdate, val1]);
-           }
+           
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        optionsD.series.push(series1);
-        new Highcharts.Chart(optionsD);
+        optionsTb.series.push(series1);
+        new Highcharts.Chart(optionsTb);
     });
-    $.get('dyostemCompare2011.csv', function(data) {
+    $.get('tbdyostemCompare2011.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -122,8 +196,9 @@ var series6=  { data: [], name: 'Tap Brix(2015)' };
             var d=new Date(t);
             
             //var utcdate =  d.toUTCString();
-            //alert(utcdate);
+            //alert("dyostemCompare2011"+d);
             var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2011"+utcdate);
             val2=parseFloat(items[1]);
             
             // Add to series if conversion was successful
@@ -133,10 +208,10 @@ var series6=  { data: [], name: 'Tap Brix(2015)' };
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        optionsD.series.push(series2);
-        new Highcharts.Chart(optionsD);
+        optionsTb.series.push(series2);
+        new Highcharts.Chart(optionsTb);
     });
-    $.get('dyostemCompare2012.csv', function(data) {
+    $.get('tbdyostemCompare2012.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -144,25 +219,28 @@ var series6=  { data: [], name: 'Tap Brix(2015)' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
+            
+            t=items[0];
+            //alert("t->"+t)
            var d=new Date(t);
             
             //var utcdate =  d.toUTCString();
-            //alert(utcdate);
+            //alert("dyostemCompare2012"+d);
             var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
-            //alert(utcdate);
+            //alert("dyostemCompare2012"+utcdate);
             val3=parseFloat(items[1]);
             
             // Add to series if conversion was successful
             if(!isNaN(val3)) series3.data.push([utcdate, val3]);
-           
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        optionsD.series.push(series3);
-        new Highcharts.Chart(optionsD);
+        optionsTb.series.push(series3);
+        new Highcharts.Chart(optionsTb);
     });
-    $.get('dyostemCompare2013.csv', function(data) {
+    $.get('tbdyostemCompare2013.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -170,25 +248,27 @@ var series6=  { data: [], name: 'Tap Brix(2015)' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
+            
+            t=items[0];
             var d=new Date(t);
             
             //var utcdate =  d.toUTCString();
-            //alert(utcdate);
+            //alert("dyostemCompare2013"+d);
             var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
-            //alert(utcdate);
+            //alert("dyostemCompare2013"+utcdate);
             val4=parseFloat(items[1]);
             
             // Add to series if conversion was successful
             if(!isNaN(val4)) series4.data.push([utcdate, val4]);
-           
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        optionsD.series.push(series4);
-        new Highcharts.Chart(optionsD);
+        optionsTb.series.push(series4);
+        new Highcharts.Chart(optionsTb);
     });
-    $.get('dyostemCompare2014.csv', function(data) {
+    $.get('tbdyostemCompare2014.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -196,25 +276,27 @@ var series6=  { data: [], name: 'Tap Brix(2015)' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
+            
+            t=items[0];
             var d=new Date(t);
             
             //var utcdate =  d.toUTCString();
-            //alert(utcdate);
+            //alert("dyostemCompare2014"+d);
             var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
-            //alert(utcdate);
+            //alert("dyostemCompare2014"+utcdate);
             val5=parseFloat(items[1]);
             
             // Add to series if conversion was successful
             if(!isNaN(val5)) series5.data.push([utcdate, val5]);
-           
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        optionsD.series.push(series5);
-        new Highcharts.Chart(optionsD);
+        optionsTb.series.push(series5);
+        new Highcharts.Chart(optionsTb);
     });
-    $.get('dyostemCompare2015.csv', function(data) {
+    $.get('tbdyostemCompare2015.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -222,32 +304,34 @@ var series6=  { data: [], name: 'Tap Brix(2015)' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
+            
+            t=items[0];
             var d=new Date(t);
             
             //var utcdate =  d.toUTCString();
-            //alert(utcdate);
+            //alert("dyostemCompare2015"+d);
             var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
-            //alert(utcdate);
+            //alert("dyostemCompare2015"+utcdate);
             val6=parseFloat(items[1]);
             
             // Add to series if conversion was successful
             if(!isNaN(val6)) series6.data.push([utcdate, val6]);
-           
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        optionsD.series.push(series6);
-        new Highcharts.Chart(optionsD);
+        optionsTb.series.push(series6);
+        new Highcharts.Chart(optionsTb);
     });
         // Create the plot
-    optionsD = {
+    optionsTb = {
     	       chart: {
-    	            renderTo: 'dyostemcomparecontainer',
+    	            renderTo: 'tbdyostemcomparecontainer',
     	            type: 'line',
     	            zoomType: 'x'
     	       },
-    	       title: { text: 'temperature measurments' },
+    	       title: { text: 'TAP BRIX' },
     	       xAxis: { type: 'datetime',
     	            dateTimeLabelFormats: { // don't display the dummy year
     	                month: '%e. %b',
@@ -268,230 +352,59 @@ var series6=  { data: [], name: 'Tap Brix(2015)' };
     	                }
     	            }
     	        },   
-    	       yAxis: { title: { text: 'Tap Brix' } },
+    	       yAxis: { title: { text: 'Units' } },
     	       series: []
 
     	    };       
 });
 </script> 
-  <script type="text/javascript">
-$(document).ready(function() {
-    // Define and initialize "options"
-    options = {
-       chart: {
-            renderTo: 'tabbrixcontainer',
-            type: 'line',
-            zoomType: 'xy'
-       },
-       title: { text: 'Tap Brix' },
-       xAxis: { categories: [] },
-       yAxis: { title: { text: 'Units' } },
-       series: []
-    };
-var series1 = { color : '#C40917', data: [], name: 'TapBrix2010' };
-var series2=  { color : '#C409A2', data: [], name: 'TapBrix2011' };
-var series3=  { color : '#2809C4', data: [], name: 'TapBrix2012' };
-var series4=  { color : '#09C4C4', data: [], name: 'TapBrix2013' };
-var series5=  { color : '#09C44A', data: [], name: 'TapBrix2014' };
-var series6=  { color : '#B6C409', data: [], name: 'TapBrix2015' };
-var series6=  { color : '#050500', data: [], name: 'TapBrix2016' };
-    // Read datafile
-    $.get('tapBrixdyostemCompare2010.csv', function(data) {
-        var lines = data.split('\n');
-        $.each(lines, function(lineNo, line) {
-            
-            var items = line.split(',');
-            // Add 3600 for timezone offset and multiply by 1000 to have time in ms
-            //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
-            val1=parseFloat(items[1]);
-            
-            // Add to series if conversion was successful
-            if(!isNaN(val1)) series1.data.push([t, val1]);
-           
-        });
-
-        // Push the completed series
-        //options.xAxis.categories.push(t);
-        options.series.push(series1);
-        new Highcharts.Chart(options);
-    });
-    $.get('tapBrixdyostemCompare2011.csv', function(data) {
-        // Split the lines
-        var lines = data.split('\n');
-        // Slit each line into items separated by commas
-        $.each(lines, function(lineNo, line) {
-            var items = line.split(',');
-            // Add 3600 for timezone offset and multiply by 1000 to have time in ms
-            //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
-            val2=parseFloat(items[1]);
-            
-            // Add to series if conversion was successful
-            if(!isNaN(val2)) series2.data.push([t, val2]);
-           
-        });
-
-        // Push the completed series
-        //options.xAxis.categories.push(t);
-        options.series.push(series2);
-        new Highcharts.Chart(options);
-    });
-    $.get('tapBrixdyostemCompare2012.csv', function(data) {
-        // Split the lines
-        var lines = data.split('\n');
-        // Slit each line into items separated by commas
-        $.each(lines, function(lineNo, line) {
-            var items = line.split(',');
-            // Add 3600 for timezone offset and multiply by 1000 to have time in ms
-            //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
-            val3=parseFloat(items[1]);
-            
-            // Add to series if conversion was successful
-            if(!isNaN(val3)) series3.data.push([t, val3]);
-           
-        });
-
-        // Push the completed series
-        //options.xAxis.categories.push(t);
-        options.series.push(series3);
-        new Highcharts.Chart(options);
-    });
-    $.get('tapBrixdyostemCompare2013.csv', function(data) {
-        // Split the lines
-        var lines = data.split('\n');
-        // Slit each line into items separated by commas
-        $.each(lines, function(lineNo, line) {
-            var items = line.split(',');
-            // Add 3600 for timezone offset and multiply by 1000 to have time in ms
-            //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
-            val4=parseFloat(items[1]);
-            
-            // Add to series if conversion was successful
-            if(!isNaN(val4)) series4.data.push([t, val4]);
-           
-        });
-
-        // Push the completed series
-        //options.xAxis.categories.push(t);
-        options.series.push(series4);
-        new Highcharts.Chart(options);
-    });
-    $.get('tapBrixdyostemCompare2014.csv', function(data) {
-        // Split the lines
-        var lines = data.split('\n');
-        // Slit each line into items separated by commas
-        $.each(lines, function(lineNo, line) {
-            var items = line.split(',');
-            // Add 3600 for timezone offset and multiply by 1000 to have time in ms
-            //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
-            val5=parseFloat(items[1]);
-            
-            // Add to series if conversion was successful
-            if(!isNaN(val5)) series5.data.push([t, val5]);
-           
-        });
-
-        // Push the completed series
-        //options.xAxis.categories.push(t);
-        options.series.push(series5);
-        new Highcharts.Chart(options);
-    });
-    $.get('tapBrixdyostemCompare2015.csv', function(data) {
-        // Split the lines
-        var lines = data.split('\n');
-        // Slit each line into items separated by commas
-        $.each(lines, function(lineNo, line) {
-            var items = line.split(',');
-            // Add 3600 for timezone offset and multiply by 1000 to have time in ms
-            //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
-            val6=parseFloat(items[1]);
-            
-            // Add to series if conversion was successful
-            if(!isNaN(val6)) series6.data.push([t, val6]);
-           
-        });
-
-        // Push the completed series
-        //options.xAxis.categories.push(t);
-        options.series.push(series6);
-        new Highcharts.Chart(options);
-    });
-    $.get('tapBrixdyostemCompare2016.csv', function(data) {
-        // Split the lines
-        var lines = data.split('\n');
-        // Slit each line into items separated by commas
-        $.each(lines, function(lineNo, line) {
-            var items = line.split(',');
-            // Add 3600 for timezone offset and multiply by 1000 to have time in ms
-            //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
-            val7=parseFloat(items[1]);
-            
-            // Add to series if conversion was successful
-            if(!isNaN(val7)) series7.data.push([t, val7]);
-           
-        });
-
-        // Push the completed series
-        //options.xAxis.categories.push(t);
-        options.series.push(series7);
-        new Highcharts.Chart(options);
-    });
-        // Create the plot
-        
-});
-</script>
 
 <script type="text/javascript">
 $(document).ready(function() {
-    // Define and initialize "options"
-    options = {
-       chart: {
-            renderTo: 'sugquantcontainer',
-            type: 'line',
-            zoomType: 'xy'
-       },
-       title: { text: 'Sugar Quantity' },
-       xAxis: { categories: [] },
-       yAxis: { title: { text: 'Units' } },
-       series: []
-    };
-var series1 = { color : '#C40917', data: [], name: 'SugQuant2010' };
-var series2=  { color : '#C409A2', data: [], name: 'SugQuant2011' };
-var series3=  { color : '#2809C4', data: [], name: 'SugQuant2012' };
-var series4=  { color : '#09C4C4', data: [], name: 'SugQuant2013' };
-var series5=  { color : '#09C44A', data: [], name: 'SugQuant2014' };
-var series6=  { color : '#B6C409', data: [], name: 'SugQuant2015' };
-var series6=  { color : '#050500', data: [], name: 'SugQuant2016' };
+   
+    
+var series1 = { color:'#FF3F33',data: [], name: 'Sugar Quantity(2010)' };
+var series2=  { color:'#FFF933',data: [], name: 'Sugar Quantity(2011)'};
+var series3=  { color:'#33FF5B',data: [], name: 'Sugar Quantity(2012)' };
+var series4=  { color:'#3393FF',data: [], name: 'Sugar Quantity(2013)' };
+var series5=  { color:'#FF33FF',data: [], name: 'Sugar Quantity(2014)' };
+var series6=  { color:'#030003',data: [], name: 'Sugar Quantity(2015)' };
     // Read datafile
-    $.get('sugQuantdyostemCompare2010.csv', function(data) {
+   $.get('sqdyostemCompare2010.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
         $.each(lines, function(lineNo, line) {
             
+                
             var items = line.split(',');
+
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+           
+            t=items[0];
+           // var x = JSON.parse(t);
+          
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2010"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2010"+utcdate);
+
             val1=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val1)) series1.data.push([t, val1]);
+            if(!isNaN(val1)) series1.data.push([utcdate, val1]);
            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series1);
-        new Highcharts.Chart(options);
+        optionsSq.series.push(series1);
+        new Highcharts.Chart(optionsSq);
     });
-    $.get('sugQuantdyostemCompare2011.csv', function(data) {
+    $.get('sqdyostemCompare2011.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -499,20 +412,29 @@ var series6=  { color : '#050500', data: [], name: 'SugQuant2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+           
+             t=items[0];
+           // var x = JSON.parse(t);
+          
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2011"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2011"+utcdate);
             val2=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val2)) series2.data.push([t, val2]);
+            if(!isNaN(val2)) series2.data.push([utcdate, val2]);
            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series2);
-        new Highcharts.Chart(options);
+        optionsSq.series.push(series2);
+        new Highcharts.Chart(optionsSq);
     });
-    $.get('sugQuantdyostemCompare2012.csv', function(data) {
+    $.get('sqdyostemCompare2012.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -520,20 +442,28 @@ var series6=  { color : '#050500', data: [], name: 'SugQuant2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+            
+            t=items[0];
+            //alert("t->"+t)
+           var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2012"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2012"+utcdate);
             val3=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val3)) series3.data.push([t, val3]);
-           
+            if(!isNaN(val3)) series3.data.push([utcdate, val3]);
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series3);
-        new Highcharts.Chart(options);
+        optionsSq.series.push(series3);
+        new Highcharts.Chart(optionsSq);
     });
-    $.get('sugQuantdyostemCompare2013.csv', function(data) {
+    $.get('sqdyostemCompare2013.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -541,20 +471,27 @@ var series6=  { color : '#050500', data: [], name: 'SugQuant2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+            
+            t=items[0];
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2013"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2013"+utcdate);
             val4=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val4)) series4.data.push([t, val4]);
-           
+            if(!isNaN(val4)) series4.data.push([utcdate, val4]);
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series4);
-        new Highcharts.Chart(options);
+        optionsSq.series.push(series4);
+        new Highcharts.Chart(optionsSq);
     });
-    $.get('sugQuantdyostemCompare2014.csv', function(data) {
+    $.get('sqdyostemCompare2014.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -562,20 +499,27 @@ var series6=  { color : '#050500', data: [], name: 'SugQuant2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+            
+            t=items[0];
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2014"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2014"+utcdate);
             val5=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val5)) series5.data.push([t, val5]);
-           
+            if(!isNaN(val5)) series5.data.push([utcdate, val5]);
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series5);
-        new Highcharts.Chart(options);
+        optionsSq.series.push(series5);
+        new Highcharts.Chart(optionsSq);
     });
-    $.get('sugQuantdyostemCompare2015.csv', function(data) {
+    $.get('sqdyostemCompare2015.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
@@ -583,88 +527,105 @@ var series6=  { color : '#050500', data: [], name: 'SugQuant2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+            
+            t=items[0];
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2015"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2015"+utcdate);
             val6=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val6)) series6.data.push([t, val6]);
-           
-        });
-
-        // Push the completed series
-        //options.xAxis.categories.push(t);
-        options.series.push(series6);
-        new Highcharts.Chart(options);
-    });
-    $.get('sugQuantdyostemCompare2016.csv', function(data) {
-        // Split the lines
-        var lines = data.split('\n');
-        // Slit each line into items separated by commas
-        $.each(lines, function(lineNo, line) {
-            var items = line.split(',');
-            // Add 3600 for timezone offset and multiply by 1000 to have time in ms
-            //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
-            val7=parseFloat(items[1]);
+            if(!isNaN(val6)) series6.data.push([utcdate, val6]);
             
-            // Add to series if conversion was successful
-            if(!isNaN(val7)) series7.data.push([t, val7]);
-           
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series7);
-        new Highcharts.Chart(options);
+        optionsSq.series.push(series6);
+        new Highcharts.Chart(optionsSq);
     });
         // Create the plot
-        
+    optionsSq = {
+    	       chart: {
+    	            renderTo: 'sqdyostemcomparecontainer',
+    	            type: 'line',
+    	            zoomType: 'x'
+    	       },
+    	       title: { text: 'SUGAR QUANTITY' },
+    	       xAxis: { type: 'datetime',
+    	            dateTimeLabelFormats: { // don't display the dummy year
+    	                month: '%e. %b',
+    	                year: '%b'
+    	            },
+    	            title: {
+    	                text: 'Date'
+    	            }
+    	    },
+    	        tooltip: {
+    	            headerFormat: '<b>{series.name}</b><br>',
+    	            pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+    	        },
+    	         plotOptions: {
+    	            spline: {
+    	                marker: {
+    	                    enabled: true
+    	                }
+    	            }
+    	        },   
+    	       yAxis: { title: { text: 'Units' } },
+    	       series: []
+
+    	    };       
 });
-</script>
+</script> 
 
 <script type="text/javascript">
 $(document).ready(function() {
-    // Define and initialize "options"
-    options = {
-       chart: {
-            renderTo: 'phcontainer',
-            type: 'line',
-            zoomType: 'xy'
-       },
-       title: { text: 'Sugar Quantity' },
-       xAxis: { categories: [] },
-       yAxis: { title: { text: 'Units' } },
-       series: []
-    };
-var series1 = { color : '#C40917', data: [], name: 'ph2010' };
-var series2=  { color : '#C409A2', data: [], name: 'ph2011' };
-var series3=  { color : '#2809C4', data: [], name: 'ph2012' };
-var series4=  { color : '#09C4C4', data: [], name: 'ph2013' };
-var series5=  { color : '#09C44A', data: [], name: 'ph2014' };
-var series6=  { color : '#B6C409', data: [], name: 'ph2015' };
-var series6=  { color : '#050500', data: [], name: 'ph2016' };
+   
+    
+var series1 = { color:'#FF3F33',data: [], name: 'ph(2010)' };
+var series2=  { color:'#FFF933',data: [], name: 'ph(2011)'};
+var series3=  { color:'#33FF5B',data: [], name: 'ph(2012)' };
+var series4=  { color:'#3393FF',data: [], name: 'ph(2013)' };
+var series5=  { color:'#FF33FF',data: [], name: 'ph(2014)' };
+var series6=  { color:'#030003',data: [], name: 'ph(2015)' };
     // Read datafile
-    $.get('phdyostemCompare2010.csv', function(data) {
+   $.get('phdyostemCompare2010.csv', function(data) {
         // Split the lines
         var lines = data.split('\n');
         // Slit each line into items separated by commas
         $.each(lines, function(lineNo, line) {
             
+                
             var items = line.split(',');
+
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+           
+            t=items[0];
+           // var x = JSON.parse(t);
+          
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2010"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2010"+utcdate);
+
             val1=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val1)) series1.data.push([t, val1]);
+            if(!isNaN(val1)) series1.data.push([utcdate, val1]);
            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series1);
-        new Highcharts.Chart(options);
+        optionsPh.series.push(series1);
+        new Highcharts.Chart(optionsPh);
     });
     $.get('phdyostemCompare2011.csv', function(data) {
         // Split the lines
@@ -674,18 +635,27 @@ var series6=  { color : '#050500', data: [], name: 'ph2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+           
+             t=items[0];
+           // var x = JSON.parse(t);
+          
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2011"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2011"+utcdate);
             val2=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val2)) series2.data.push([t, val2]);
+            if(!isNaN(val2)) series2.data.push([utcdate, val2]);
            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series2);
-        new Highcharts.Chart(options);
+        optionsPh.series.push(series2);
+        new Highcharts.Chart(optionsPh);
     });
     $.get('phdyostemCompare2012.csv', function(data) {
         // Split the lines
@@ -695,18 +665,26 @@ var series6=  { color : '#050500', data: [], name: 'ph2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+            
+            t=items[0];
+            //alert("t->"+t)
+           var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2012"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2012"+utcdate);
             val3=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val3)) series3.data.push([t, val3]);
-           
+            if(!isNaN(val3)) series3.data.push([utcdate, val3]);
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series3);
-        new Highcharts.Chart(options);
+        optionsPh.series.push(series3);
+        new Highcharts.Chart(optionsPh);
     });
     $.get('phdyostemCompare2013.csv', function(data) {
         // Split the lines
@@ -716,18 +694,25 @@ var series6=  { color : '#050500', data: [], name: 'ph2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+            
+            t=items[0];
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2013"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2013"+utcdate);
             val4=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val4)) series4.data.push([t, val4]);
-           
+            if(!isNaN(val4)) series4.data.push([utcdate, val4]);
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series4);
-        new Highcharts.Chart(options);
+        optionsPh.series.push(series4);
+        new Highcharts.Chart(optionsPh);
     });
     $.get('phdyostemCompare2014.csv', function(data) {
         // Split the lines
@@ -737,18 +722,25 @@ var series6=  { color : '#050500', data: [], name: 'ph2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+            
+            t=items[0];
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2014"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2014"+utcdate);
             val5=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val5)) series5.data.push([t, val5]);
-           
+            if(!isNaN(val5)) series5.data.push([utcdate, val5]);
+            
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series5);
-        new Highcharts.Chart(options);
+        optionsPh.series.push(series5);
+        new Highcharts.Chart(optionsPh);
     });
     $.get('phdyostemCompare2015.csv', function(data) {
         // Split the lines
@@ -758,45 +750,61 @@ var series6=  { color : '#050500', data: [], name: 'ph2016' };
             var items = line.split(',');
             // Add 3600 for timezone offset and multiply by 1000 to have time in ms
             //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
+            
+            t=items[0];
+            var d=new Date(t);
+            
+            //var utcdate =  d.toUTCString();
+            //alert("dyostemCompare2015"+d);
+            var utcdate=Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+            //alert("dyostemCompare2015"+utcdate);
             val6=parseFloat(items[1]);
             
             // Add to series if conversion was successful
-            if(!isNaN(val6)) series6.data.push([t, val6]);
-           
-        });
-
-        // Push the completed series
-        //options.xAxis.categories.push(t);
-        options.series.push(series6);
-        new Highcharts.Chart(options);
-    });
-    $.get('phdyostemCompare2016.csv', function(data) {
-        // Split the lines
-        var lines = data.split('\n');
-        // Slit each line into items separated by commas
-        $.each(lines, function(lineNo, line) {
-            var items = line.split(',');
-            // Add 3600 for timezone offset and multiply by 1000 to have time in ms
-            //t=(parseInt(items[0])+3600)*1000;
-            t=items[0]
-            val7=parseFloat(items[1]);
+            if(!isNaN(val6)) series6.data.push([utcdate, val6]);
             
-            // Add to series if conversion was successful
-            if(!isNaN(val7)) series7.data.push([t, val7]);
-           
         });
 
         // Push the completed series
         //options.xAxis.categories.push(t);
-        options.series.push(series7);
-        new Highcharts.Chart(options);
+        optionsPh.series.push(series6);
+        new Highcharts.Chart(optionsPh);
     });
         // Create the plot
-        
+    optionsPh = {
+    	       chart: {
+    	            renderTo: 'phdyostemcomparecontainer',
+    	            type: 'line',
+    	            zoomType: 'x'
+    	       },
+    	       title: { text: 'PH' },
+    	       xAxis: { type: 'datetime',
+    	            dateTimeLabelFormats: { // don't display the dummy year
+    	                month: '%e. %b',
+    	                year: '%b'
+    	            },
+    	            title: {
+    	                text: 'Date'
+    	            }
+    	    },
+    	        tooltip: {
+    	            headerFormat: '<b>{series.name}</b><br>',
+    	            pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+    	        },
+    	         plotOptions: {
+    	            spline: {
+    	                marker: {
+    	                    enabled: true
+    	                }
+    	            }
+    	        },   
+    	       yAxis: { title: { text: 'Units' } },
+    	       series: []
+
+    	    };       
 });
-</script>
-  
+</script> 
+   
 		<script type="text/javascript">
 		$(document).ready(function() {
 			
@@ -1325,7 +1333,7 @@ function senddate(id){
                         }
                     }
                 }, {
-                    name: 'Muscat Blanc Ã  Petits Grains',
+                    name: 'Muscat Blanc à Petits Grains',
                     value: 1,
                     events: {
                         click: function () {
@@ -1860,6 +1868,9 @@ function senddate(id){
         			
         			<select name="grapename" onchange="this.form.submit()">	
         			<option value="">Select a Grape Veriety</option>
+        							<c:if  test="${!empty selectedgrape}">
+												<option value="" selected="selected">${selectedgrape}</option>
+											</c:if>
 						        		<c:if  test="${!empty grapes}">
 										<c:forEach items="${grapes}" var="grapename">
 							         		<option value="${grapename}">${grapename}</option>
@@ -1924,7 +1935,9 @@ function senddate(id){
 	
 	<div class="portfolio clearfix full-height">
                     <h2 class="small-heading">CIMIS DATA</h2>
-                   
+                   <form:form action="${pageContext.request.contextPath}/cimisupdate#cimis" method="post" name="factors">
+                   <button type="submit" style="float : right" >Update from CIMIS</button>
+                   </form:form>
 				<div style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto; margin-top: 20px">
 			<form:form action="${pageContext.request.contextPath}/cimis#cimis" method="post" name="factors">
 	        	<div class="">
@@ -1954,7 +1967,158 @@ function senddate(id){
 	       
 		</div>
         </div>     
+		
+		<div id="windrosecontainer" style="min-width: 420px; max-width: 600px; height: 400px; margin: 0 auto"></div>
 
+<div style="display:none">
+    <!-- Source: http://or.water.usgs.gov/cgi-bin/grapher/graph_windrose.pl -->
+    <table id="freq" border="0" cellspacing="0" cellpadding="0">
+        <tr nowrap bgcolor="#CCCCFF">
+            <th colspan="9" class="hdr">Table of Frequencies (percent)</th>
+        </tr>
+        <tr nowrap bgcolor="#CCCCFF">
+            <th class="freq">Direction</th>
+            <th class="freq">&lt; 0.5 m/s</th>
+            <th class="freq">0.5-2 m/s</th>
+            <th class="freq">2-4 m/s</th>
+            <th class="freq">4-6 m/s</th>
+            <th class="freq">6-8 m/s</th>
+            <th class="freq">8-10 m/s</th>
+            <th class="freq">&gt; 10 m/s</th>
+            <th class="freq">Total</th>
+        </tr>
+        <tr nowrap>
+            <td class="dir">N</td>
+            <c:if  test="${!empty N}">
+				<c:forEach items="${N}" var="north">
+					<td class="data">${north}</td>
+				</c:forEach>
+			</c:if>
+            
+        </tr>        
+        <tr nowrap bgcolor="#DDDDDD">
+            <td class="dir">NNE</td>
+            <c:if  test="${!empty NNE}">
+				<c:forEach items="${NNE}" var="nneast">
+					<td class="data">${nneast}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap>
+            <td class="dir">NE</td>
+            <c:if  test="${!empty NE}">
+				<c:forEach items="${NE}" var="neast">
+					<td class="data">${neast}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap bgcolor="#DDDDDD">
+            <td class="dir">ENE</td>
+            <c:if  test="${!empty ENE}">
+				<c:forEach items="${ENE}" var="eneast">
+					<td class="data">${eneast}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap>
+            <td class="dir">E</td>
+            <c:if  test="${!empty E}">
+				<c:forEach items="${E}" var="east">
+					<td class="data">${east}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap bgcolor="#DDDDDD">
+            <td class="dir">ESE</td>
+            <c:if  test="${!empty ESE}">
+				<c:forEach items="${ESE}" var="eseast">
+					<td class="data">${eseast}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap>
+            <td class="dir">SE</td>
+            <c:if  test="${!empty SE}">
+				<c:forEach items="${SE}" var="seast">
+					<td class="data">${seast}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap bgcolor="#DDDDDD">
+            <td class="dir">SSE</td>
+            <c:if  test="${!empty SSE}">
+				<c:forEach items="${SSE}" var="sseast">
+					<td class="data">${sseast}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap>
+            <td class="dir">S</td>
+            <c:if  test="${!empty S}">
+				<c:forEach items="${S}" var="south">
+					<td class="data">${south}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap bgcolor="#DDDDDD">
+            <td class="dir">SSW</td>
+            <c:if  test="${!empty SSW}">
+				<c:forEach items="${SSW}" var="sswest">
+					<td class="data">${sswest}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap>
+            <td class="dir">SW</td>
+            <c:if  test="${!empty SW}">
+				<c:forEach items="${SW}" var="swest">
+					<td class="data">${swest}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap bgcolor="#DDDDDD">
+            <td class="dir">WSW</td>
+            <c:if  test="${!empty WSW}">
+				<c:forEach items="${WSW}" var="wswest">
+					<td class="data">${wswest}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap>
+            <td class="dir">W</td>
+            <c:if  test="${!empty W}">
+				<c:forEach items="${W}" var="west">
+					<td class="data">${west}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap bgcolor="#DDDDDD">
+            <td class="dir">WNW</td>
+            <c:if  test="${!empty WNW}">
+				<c:forEach items="${WNW}" var="wnwest">
+					<td class="data">${wnwest}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+        <tr nowrap>
+            <td class="dir">NW</td>
+            <c:if  test="${!empty NW}">
+				<c:forEach items="${NW}" var="nwest">
+					<td class="data">${nwest}</td>
+				</c:forEach>
+			</c:if>
+        </tr>        
+        <tr nowrap bgcolor="#DDDDDD">
+            <td class="dir">NNW</td>
+            <c:if  test="${!empty NNW}">
+				<c:forEach items="${NNW}" var="nnwest">
+					<td class="data">${nnwest}</td>
+				</c:forEach>
+			</c:if>
+        </tr>
+       
+    </table>
+</div>
 				
          
                 <!--( D ) Footer -->
@@ -2089,6 +2253,9 @@ function senddate(id){
                                 <form:form action="${pageContext.request.contextPath}/comparisions#comparisions" method="post" name="comp">
 						        	Select a Block to Compare:
 						        	<select name="block" onchange="this.form.submit()">	
+						        		<c:if  test="${!empty blockC}">
+												<option value="" selected="selected">${blockC}</option>
+											</c:if>
 						        		<c:if  test="${!empty blocks}">
 										<c:forEach items="${blocks}" var="block">
 							         		<option value="${block}">${block}</option>
@@ -2098,8 +2265,12 @@ function senddate(id){
 									</select>				        		
 						        		
 						        		</form:form>  
-                               <div id="dyostemcomparecontainer" style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto"></div>
-                                   
+                                <div id="tbdyostemcomparecontainer" style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto"></div>
+                                <div id="sqdyostemcomparecontainer" style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto"></div>
+                                <div id="phdyostemcomparecontainer" style="width:80%; height:80%; display: block; margin-left: auto; margin-right: auto"></div>  
+                         <!--         <div id="tabbrixcontainer" style="width:50%; height:50%; float:left"></div><br>
+                               <div id="sugquantcontainer" style="width:50%; height:50%; float:right"></div>
+                               <div id="phcontainer" style="width:100%; height:100%;"></div> -->
                                     
                             </div>
 							<div class="contact-info">
@@ -2108,6 +2279,9 @@ function senddate(id){
                                 <form:form action="${pageContext.request.contextPath}/predictions#comparisions" method="post" name="pred">
 						        	Select a Block to Predict:
 						        	<select name="block" onchange="this.form.submit()">	
+						        		<c:if  test="${!empty blockP}">
+												<option value="" selected="selected">${blockP}</option>
+											</c:if>
 						        		<c:if  test="${!empty blocks}">
 										<c:forEach items="${blocks}" var="block">
 							         		<option value="${block}">${block}</option>

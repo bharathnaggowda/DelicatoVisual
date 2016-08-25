@@ -23,7 +23,7 @@ public class ExcelService {
 	public void writeToXls(String date, Double degree )
 	{
 			try {
-				System.out.println("inside csv--->");
+				//System.out.println("inside csv--->");
 				
 				HSSFWorkbook wb = null;
 				HSSFSheet sheet = null;
@@ -125,19 +125,19 @@ public class ExcelService {
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell2.setCellValue(airtemp);
-				System.out.println("air------------------->"+airtemp);
+				//System.out.println("air------------------->"+airtemp);
 				cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell3.setCellValue(dewpoint);
-				System.out.println("dew------------------->"+dewpoint);
+				//System.out.println("dew------------------->"+dewpoint);
 				cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell4.setCellValue(windspeed);
-				System.out.println("wind------------------->"+windspeed);
+				//System.out.println("wind------------------->"+windspeed);
 				cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell5.setCellValue(vappres);
-				System.out.println("vap------------------->"+vappres);
+				//System.out.println("vap------------------->"+vappres);
 				cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell6.setCellValue(soiltemp);
-				System.out.println("soil------------------->"+soiltemp);
+				//System.out.println("soil------------------->"+soiltemp);
 				// Write the output to a file
 				FileOutputStream fileOut = new FileOutputStream(filePath+"cimis1.xls");
 				wb.write(fileOut);
@@ -193,11 +193,11 @@ public class ExcelService {
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell2.setCellValue(relhum);
-				System.out.println("rel------------------->"+relhum);
+				//System.out.println("rel------------------->"+relhum);
 				
 				cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell3.setCellValue(winddir);
-				System.out.println("dir------------------->"+winddir);
+				//System.out.println("dir------------------->"+winddir);
 				FileOutputStream fileOut = new FileOutputStream(filePath+"cimis3.xls");
 				wb.write(fileOut);
 				fileOut.close();
@@ -209,7 +209,7 @@ public class ExcelService {
 	public void writeToCsv2(String date, double airtemp, double dewpoint, double windspeed, double vappres, double soiltemp)
 	{
 			try {
-				System.out.println("inside csv--->");
+				//System.out.println("inside csv--->");
 				
 				HSSFWorkbook wb = null;
 				HSSFSheet sheet = null;
@@ -265,19 +265,19 @@ public class ExcelService {
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell2.setCellValue(airtemp);
-				System.out.println("------------------->"+airtemp);
+				//System.out.println("------------------->"+airtemp);
 				cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell3.setCellValue(dewpoint);
-				System.out.println("------------------->"+dewpoint);
+				//System.out.println("------------------->"+dewpoint);
 				cell4.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell4.setCellValue(windspeed);
-				System.out.println("------------------->"+windspeed);
+				//System.out.println("------------------->"+windspeed);
 				cell5.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell5.setCellValue(vappres);
-				System.out.println("------------------->"+vappres);
+				//System.out.println("------------------->"+vappres);
 				cell6.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell6.setCellValue(soiltemp);
-				System.out.println("------------------->"+soiltemp);
+				//System.out.println("------------------->"+soiltemp);
 				FileOutputStream fileOut = new FileOutputStream(filePath+"cimis2.xls");
 				wb.write(fileOut);
 				fileOut.close();
@@ -288,7 +288,7 @@ public class ExcelService {
 	public void writeToCsv(String date, double relhum, double winddir)
 	{
 			try {
-				System.out.println("inside csv--->");
+				//System.out.println("inside csv--->");
 				
 				HSSFWorkbook wb = null;
 				HSSFSheet sheet = null;
@@ -327,11 +327,11 @@ public class ExcelService {
 				
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell2.setCellValue(relhum);
-				System.out.println("------------------->"+relhum);
+				//System.out.println("------------------->"+relhum);
 				
 				cell3.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell3.setCellValue(winddir);
-				System.out.println("------------------->"+winddir);
+				//System.out.println("------------------->"+winddir);
 				FileOutputStream fileOut = new FileOutputStream(filePath+"cimis4.xls");
 				wb.write(fileOut);
 				fileOut.close();
@@ -342,7 +342,7 @@ public class ExcelService {
 		  public void writeToCsvforblockname(String blockname, double  tapbrix)
 	{
 			try {
-				System.out.println("inside csv--->");
+				//System.out.println("inside csv--->");
 				
 				HSSFWorkbook wb = null;
 				HSSFSheet sheet = null;
@@ -385,10 +385,10 @@ public class ExcelService {
 				
 				cell1.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell1.setCellValue(blockname);
-				System.out.println("------------------->"+blockname);
+				//System.out.println("------------------->"+blockname);
 				cell2.setCellType(Cell.CELL_TYPE_NUMERIC);
 				cell2.setCellValue(tapbrix);
-				System.out.println("------------------->"+tapbrix);
+				//System.out.println("------------------->"+tapbrix);
 				
 				FileOutputStream fileOut = new FileOutputStream(filePath+"blockname.xls");
 				wb.write(fileOut);
