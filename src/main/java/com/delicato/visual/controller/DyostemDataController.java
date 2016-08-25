@@ -16,7 +16,7 @@ import com.mongodb.client.MongoDatabase;
 public class DyostemDataController {
 	
 	SpringMongoConfig mongoConfig=new SpringMongoConfig();
-	MongoClient mongoClient=mongoConfig.getMongoClient();
+	MongoClient mongoClient=mongoConfig.getMongoClient("");
 	MongoDatabase db = mongoClient.getDatabase("delicato");
 	MongoCollection<Document> dyostemCollection = db.getCollection("dyostemdata");
 	MongoCollection<Document> dyostemCollectionNew = db.getCollection("dyostemdatanew");

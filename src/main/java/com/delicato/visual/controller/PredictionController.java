@@ -27,13 +27,26 @@ import com.mongodb.client.MongoDatabase;
 
 public class PredictionController {
 	
-	SpringMongoConfig mongoConfig=new SpringMongoConfig();
-	MongoClient mongoClient=mongoConfig.getMongoClient();
-	MongoDatabase db = mongoClient.getDatabase("delicato");
-	MongoCollection<Document> cimisCollection = db.getCollection("cimisdata");
-	MongoCollection<Document> dyostemCollection = db.getCollection("dyostemdata");
-	MongoCollection<Document> ratingCollection = db.getCollection("VintageRating");
-	MongoCollection<Document> dyostemCollectionNew = db.getCollection("dyostemdatanew");
+	SpringMongoConfig mongoConfig;
+	MongoClient mongoClient;
+	MongoDatabase db;
+	MongoCollection<Document> cimisCollection;
+	MongoCollection<Document> dyostemCollection;
+	MongoCollection<Document> ratingCollection;
+	MongoCollection<Document> dyostemCollectionNew;
+	
+	public PredictionController(String mongolink){
+		
+		mongoConfig = new SpringMongoConfig();
+		mongoClient = mongoConfig.getMongoClient(mongolink);
+		db = mongoClient.getDatabase("delicato");
+		cimisCollection = db.getCollection("cimisdata");
+		dyostemCollection = db.getCollection("dyostemdata");
+		ratingCollection = db.getCollection("VintageRating");
+		dyostemCollectionNew = db.getCollection("dyostemdatanew");
+	}
+	
+	
 	
 	final SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
 	SimpleDateFormat dFormat = new SimpleDateFormat("MM/dd/yy");

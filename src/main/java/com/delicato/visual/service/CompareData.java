@@ -31,18 +31,23 @@ public class CompareData {
 	
 	SpringMongoConfig mongoConfig;
 	MongoClient mongoClient;
+	MongoDatabase db;
+	MongoCollection<Document> cimisCollection;
+	MongoCollection<Document> dyostemCollectionnew;
+	MongoCollection<Document> ratingCollection;
 	
 	public CompareData(String mongolink){
 		
-		mongoClient = mongoConfig.getMongoClient(mongolink);
 		mongoConfig = new SpringMongoConfig();
+		mongoClient = mongoConfig.getMongoClient(mongolink);
+		db = mongoClient.getDatabase("delicato");
+		cimisCollection = db.getCollection("cimisdata");
+		dyostemCollectionnew = db.getCollection("dyostemdatanew");
+		ratingCollection = db.getCollection("VintageRating");
 	}
 
 	CsvService csvService = new CsvService();
-	MongoDatabase db = mongoClient.getDatabase("delicato");
-	MongoCollection<Document> cimisCollection = db.getCollection("cimisdata");
-	MongoCollection<Document> dyostemCollectionnew = db.getCollection("dyostemdatanew");
-	MongoCollection<Document> ratingCollection = db.getCollection("VintageRating");
+	
 	
 	String rootPath =System.getProperty("user.dir");
 	String filePath = rootPath+"/src/main/webapp/";

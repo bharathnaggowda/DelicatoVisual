@@ -13,10 +13,13 @@ public class SpringMongoConfig {
     	//String link ="mongodb://localhost:27017/delicato";
     	//String link ="mongodb://bharathnaggowda:mongoPa$$@ds015939.mlab.com:15939/delicato";
     	//String link ="mongodb://admin:GU2Sc5FqmqBw@ds015939.mlab.com:15939/delicuatoanalytics";
-    	MongoClientURI uri =new MongoClientURI(link);
+    	MongoClientURI uri;
     	
     	try{
+    		System.out.println("inside mongo");
+    		uri =new MongoClientURI(link);
     		mongoClient = new MongoClient(uri);
+    		System.out.println("inside mongo2");
     	}catch(Exception e){
     		e.printStackTrace();
     	}

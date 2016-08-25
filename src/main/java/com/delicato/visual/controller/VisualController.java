@@ -37,6 +37,9 @@ public class VisualController {
 	int comparision_end_year;
 	String mongolink;
 	CompareData compareData;
+	CimisToMongodb cimisToMongodb;
+	DataService dataService;
+	PredictionController pc;
 	
 	private VisualController(){
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("config.properties");
@@ -46,8 +49,11 @@ public class VisualController {
 	          comparision_start_year = Integer.parseInt(configProp.getProperty("comparision_start_year"));
 	          comparision_end_year = Integer.parseInt(configProp.getProperty("comparision_end_year"));
 	          mongolink = configProp.getProperty("mongolink");
-	          
+	          System.out.println("mongolink---->"+mongolink);
 	          compareData = new CompareData(mongolink);
+	          cimisToMongodb = new CimisToMongodb(mongolink);
+	          dataService = new DataService(mongolink);
+	          pc = new PredictionController(mongolink);
 	      } catch (IOException e) {
 	          e.printStackTrace();
 	      }
@@ -55,12 +61,9 @@ public class VisualController {
 	SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 	SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
-	DataService dataService = new DataService();
-	PredictionController pc = new PredictionController();
 	SurvivalModel survivalModel = new SurvivalModel();
 	SpringMongoConfig mongoConfig=new SpringMongoConfig();
 	CsvService csvService = new CsvService();
-	CimisToMongodb cimisToMongodb = new CimisToMongodb();
 	
 	String rootPath =System.getProperty("user.dir");
 	File rScript = new File(rootPath+"/src/main/webapp/rQuery.txt");

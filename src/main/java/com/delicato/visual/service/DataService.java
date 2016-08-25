@@ -22,11 +22,21 @@ import com.mongodb.client.MongoDatabase;
 
 public class DataService {
 	
-	SpringMongoConfig mongoConfig=new SpringMongoConfig();
-	MongoClient mongoClient=mongoConfig.getMongoClient();
-	MongoDatabase db = mongoClient.getDatabase("delicato");
-	MongoCollection<Document> cimisCollection = db.getCollection("cimisdata");
-	MongoCollection<Document> dyostemCollection = db.getCollection("dyostemdata");
+	SpringMongoConfig mongoConfig;
+	MongoClient mongoClient;
+	MongoDatabase db;
+	MongoCollection<Document> cimisCollection;
+	MongoCollection<Document> dyostemCollection;
+	
+	public DataService(String mongolink){
+		
+		mongoConfig = new SpringMongoConfig();
+		mongoClient = mongoConfig.getMongoClient(mongolink);
+		db = mongoClient.getDatabase("delicato");
+		cimisCollection = db.getCollection("cimisdata");
+		dyostemCollection = db.getCollection("dyostemdata");
+	}
+	
 	
 	String rootPath =System.getProperty("user.dir");
 	String filePath = rootPath+"/src/main/webapp/";

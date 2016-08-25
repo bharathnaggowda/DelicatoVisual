@@ -26,10 +26,19 @@ import com.mongodb.client.MongoDatabase;
 
 public class CimisToMongodb {
 	
-	SpringMongoConfig mongoConfig=new SpringMongoConfig();
-	MongoClient mongoClient=mongoConfig.getMongoClient();
-	MongoDatabase db = mongoClient.getDatabase("delicato");
-	MongoCollection<Document> cimisCollection = db.getCollection("cimisdata");
+	SpringMongoConfig mongoConfig;
+	MongoClient mongoClient;
+	MongoDatabase db;
+	MongoCollection<Document> cimisCollection;
+	
+	public CimisToMongodb(String mongolink){
+		
+		mongoConfig = new SpringMongoConfig();
+		mongoClient = mongoConfig.getMongoClient(mongolink);
+		db = mongoClient.getDatabase("delicato");
+		cimisCollection = db.getCollection("cimisdata");
+	}
+	
 	
 	public void getCimisData() {
 		
