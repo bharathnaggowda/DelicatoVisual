@@ -40,6 +40,18 @@ public class VisualController {
 	CimisToMongodb cimisToMongodb;
 	DataService dataService;
 	PredictionController pc;
+	SurvivalModel survivalModel;
+	SpringMongoConfig mongoConfig;
+	CsvService csvService;
+	
+	String rootPath;
+	File rScript;
+	File folder;
+	
+	SimpleDateFormat format;
+	SimpleDateFormat mFormat;
+	List<String> sortedBlocksList;
+	List<String> sortedGrapesList;
 	
 	private VisualController(){
 		InputStream in = this.getClass().getClassLoader().getResourceAsStream("config.properties");
@@ -54,22 +66,21 @@ public class VisualController {
 	          cimisToMongodb = new CimisToMongodb(mongolink);
 	          dataService = new DataService(mongolink);
 	          pc = new PredictionController(mongolink);
+	          
+	          format = new SimpleDateFormat("MM/dd/yyyy");
+	      	  mFormat = new SimpleDateFormat("yyyy-MM-dd");
+	      	
+	      	 survivalModel = new SurvivalModel();
+	      	 mongoConfig=new SpringMongoConfig();
+	      	 csvService = new CsvService();
+	      	
+	      	 rootPath =System.getProperty("user.dir");
+	      	 rScript = new File(rootPath+"/src/main/webapp/rQuery.txt");
+	      	 folder = new File(rootPath+"/src/main/webapp");
 	      } catch (IOException e) {
 	          e.printStackTrace();
 	      }
 	}
-	SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-	SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd");
-	
-	SurvivalModel survivalModel = new SurvivalModel();
-	SpringMongoConfig mongoConfig=new SpringMongoConfig();
-	CsvService csvService = new CsvService();
-	
-	String rootPath =System.getProperty("user.dir");
-	File rScript = new File(rootPath+"/src/main/webapp/rQuery.txt");
-	File folder = new File(rootPath+"/src/main/webapp");
-	List<String> sortedBlocksList;
-	List<String> sortedGrapesList;
 	
 	@RequestMapping(value="/home", method=RequestMethod.POST)
 	public String home(Factors factors, Model model) 
