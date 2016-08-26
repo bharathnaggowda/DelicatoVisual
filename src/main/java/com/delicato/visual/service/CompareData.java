@@ -35,8 +35,9 @@ public class CompareData {
 	MongoCollection<Document> cimisCollection;
 	MongoCollection<Document> dyostemCollectionnew;
 	MongoCollection<Document> ratingCollection;
+	String root_path;
 	
-	public CompareData(String mongolink){
+	public CompareData(String mongolink, String rootPath){
 		
 		mongoConfig = new SpringMongoConfig();
 		mongoClient = mongoConfig.getMongoClient(mongolink);
@@ -44,13 +45,10 @@ public class CompareData {
 		cimisCollection = db.getCollection("cimisdata");
 		dyostemCollectionnew = db.getCollection("dyostemdatanew");
 		ratingCollection = db.getCollection("VintageRating");
+		root_path = rootPath;
 	}
 
 	CsvService csvService = new CsvService();
-	
-	
-	String rootPath =System.getProperty("user.dir");
-	String filePath = rootPath+"/src/main/webapp/";
 	
     File file;
     
@@ -59,17 +57,17 @@ public class CompareData {
 	public void generateIndividualGraphs(String block, String sDate, String eDate, int year, final String newFile) {
 		
 		final String tapBrixXls = "tb"+newFile+".xls";
-		final File tapBrixXlsFile = new File(filePath+tapBrixXls);
+		final File tapBrixXlsFile = new File(root_path+tapBrixXls);
 		final String tapBrixCsv = "tb"+newFile+".csv";
-		final File tapBrixCsvFile = new File(filePath+tapBrixCsv);
+		final File tapBrixCsvFile = new File(root_path+tapBrixCsv);
 		final String sugQuantXls = "sq"+newFile+".xls";
-		final File sugQuantXlsFile = new File(filePath+sugQuantXls);
+		final File sugQuantXlsFile = new File(root_path+sugQuantXls);
 		final String sugQuantCsv = "sq"+newFile+".csv";
-		final File sugQuantCsvFile = new File(filePath+sugQuantCsv);
+		final File sugQuantCsvFile = new File(root_path+sugQuantCsv);
 		final String phXls = "ph"+newFile+".xls";
-		final File phXlsFile = new File(filePath+phXls);
+		final File phXlsFile = new File(root_path+phXls);
 		final String phCsv = "ph"+newFile+".csv";
-		final File phCsvFile = new File(filePath+phCsv);
+		final File phCsvFile = new File(root_path+phCsv);
 	    
 		if(tapBrixXlsFile.exists()){
 			tapBrixXlsFile.delete();
@@ -148,7 +146,7 @@ public class CompareData {
 	
 	private void createXls(Date dateOfAnalysis, Double tapBrix, String extendedName) {
 
-		file = new File(filePath+extendedName);
+		file = new File(root_path+extendedName);
 		try {
 			HSSFWorkbook wb = null;
 			HSSFSheet sheet = null;

@@ -27,19 +27,17 @@ public class DataService {
 	MongoDatabase db;
 	MongoCollection<Document> cimisCollection;
 	MongoCollection<Document> dyostemCollection;
+	String root_path;
 	
-	public DataService(String mongolink){
+	public DataService(String mongolink, String rootPath){
 		
 		mongoConfig = new SpringMongoConfig();
 		mongoClient = mongoConfig.getMongoClient(mongolink);
 		db = mongoClient.getDatabase("delicato");
 		cimisCollection = db.getCollection("cimisdata");
 		dyostemCollection = db.getCollection("dyostemdata");
+		root_path = rootPath;
 	}
-	
-	
-	String rootPath =System.getProperty("user.dir");
-	String filePath = rootPath+"/src/main/webapp/";
 	
 	ExcelService xlsService = new ExcelService();
 	CsvService csvService = new CsvService();
@@ -89,8 +87,8 @@ public class DataService {
 	
 	public void getCimisData(Date sDate, Date eDate, int minTempTheshold, int maxTempTheshold, int minWindTheshold, int maxWindTheshold){
 			
-		File inputFile = new File(filePath+"degreedays.xls");
-	    File outputFile = new File(filePath+"degreedays.csv");
+		File inputFile = new File(root_path+"degreedays.xls");
+	    File outputFile = new File(root_path+"degreedays.csv");
 			if(inputFile.exists()){
 				inputFile.delete();
 			}
@@ -161,7 +159,7 @@ public class DataService {
 					} catch (ParseException e) {
 						e.printStackTrace();
 					}
-			        xlsService.writeToXls(dat, degree);
+			        xlsService.writeToXls(dat, degree, root_path);
 			    }
 			});
 			
@@ -173,14 +171,14 @@ public class DataService {
 		
 		windRose = new HashMap<String, ArrayList<Double>>();
 				
-		File inputFile = new File(filePath+"cimis1.xls");
-		File outputFile = new File(filePath+"cimis1.csv");
-		File inputFile1 = new File(filePath+"cimis3.xls");
-		File outputFile1 = new File(filePath+"cimis3.csv");
-		File inputFile2 = new File(rootPath+"/src/main/webapp/cimis2.xls");
-	    File outputFile2 = new File(rootPath+"/src/main/webapp/cimis2.csv");
-		File inputFile3 = new File(rootPath+"/src/main/webapp/cimis4.xls");
-	    File outputFile3 = new File(rootPath+"/src/main/webapp/cimis4.csv");
+		File inputFile = new File(root_path+"cimis1.xls");
+		File outputFile = new File(root_path+"cimis1.csv");
+		File inputFile1 = new File(root_path+"cimis3.xls");
+		File outputFile1 = new File(root_path+"cimis3.csv");
+		File inputFile2 = new File(root_path+"cimis2.xls");
+	    File outputFile2 = new File(root_path+"cimis2.csv");
+		File inputFile3 = new File(root_path+"cimis4.xls");
+	    File outputFile3 = new File(root_path+"cimis4.csv");
 	   
 			if(inputFile2.exists()){
 				inputFile2.delete();
@@ -279,8 +277,8 @@ public class DataService {
 			        relhum1 = relhum1/count;
 			        soiltemp1 = soiltemp1/count;
 			        
-			        xlsService.writeToXlsCimisFirstGraph(dat, airtemp1,dewpoint1,vappres1,windspeed1,soiltemp1 );
-			        xlsService.writeToXlsCimisSecGraph(dat,relhum1 ,winddir1 );
+			        xlsService.writeToXlsCimisFirstGraph(dat, airtemp1,dewpoint1,vappres1,windspeed1,soiltemp1,root_path );
+			        xlsService.writeToXlsCimisSecGraph(dat,relhum1 ,winddir1,root_path );
 			        addToHashMap(winddir1,windspeed1);
 			        
 			        
@@ -432,10 +430,10 @@ public class DataService {
 	
 	public void getCimisDataForSubGraph(double airtemp, double dewpoint, double relhum, double soiltemp, double vappres, double windspeed, double winddir, Date gDate ){
 		
-		File inputFile = new File(rootPath+"/src/main/webapp/cimis2.xls");
-	    File outputFile = new File(rootPath+"/src/main/webapp/cimis2.csv");
-		File inputFile1 = new File(rootPath+"/src/main/webapp/cimis4.xls");
-	    File outputFile1 = new File(rootPath+"/src/main/webapp/cimis4.csv");
+		File inputFile = new File(root_path+"cimis2.xls");
+	    File outputFile = new File(root_path+"cimis2.csv");
+		File inputFile1 = new File(root_path+"cimis4.xls");
+	    File outputFile1 = new File(root_path+"cimis4.csv");
 	   
 			if(inputFile.exists()){
 				inputFile.delete();
@@ -517,8 +515,8 @@ public class DataService {
 						} catch (ParseException e) {
 							e.printStackTrace();
 						}
-				        xlsService.writeToCsv2(dat, airtemp1,dewpoint1,vappres1,windspeed1,soiltemp1 );
-				        xlsService.writeToCsv(dat,relhum1,winddir1 );
+				        xlsService.writeToCsv2(dat, airtemp1,dewpoint1,vappres1,windspeed1,soiltemp1,root_path );
+				        xlsService.writeToCsv(dat,relhum1,winddir1,root_path );
 			        }
 			    }
 			});
@@ -530,8 +528,8 @@ public class DataService {
 	
 public void getblockname( String blockname, String grapename, double tapbrix){
 		
-		File inputFile = new File(filePath+"blockname.xls");
-	    File outputFile = new File(filePath+"blockname.csv");
+		File inputFile = new File(root_path+"blockname.xls");
+	    File outputFile = new File(root_path+"blockname.csv");
 		
 	   
 			if(inputFile.exists()){
@@ -563,7 +561,7 @@ public void getblockname( String blockname, String grapename, double tapbrix){
 	                }
 	                	
 	                blockname=(String) document.get("Name of block");
-	                xlsService.writeToCsvforblockname( blockname,tapbrix);
+	                xlsService.writeToCsvforblockname( blockname,tapbrix,root_path);
 				}
 			});
 			
@@ -577,7 +575,7 @@ public void getblockname( String blockname, String grapename, double tapbrix){
 					e.printStackTrace();
 				}*/
 			 
-		        xlsService.writeToCsvforblockname(blockname,tapbrix);
+		        xlsService.writeToCsvforblockname(blockname,tapbrix,root_path);
     	
 
 			   

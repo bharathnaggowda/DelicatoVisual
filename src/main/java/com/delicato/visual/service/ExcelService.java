@@ -17,10 +17,7 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 
 public class ExcelService {
 	
-	String rootPath =System.getProperty("user.dir");
-	String filePath = rootPath+"/src/main/webapp/";
-
-	public void writeToXls(String date, Double degree )
+	public void writeToXls(String date, Double degree, String filePath )
 	{
 			try {
 				//System.out.println("inside csv--->");
@@ -69,7 +66,7 @@ public class ExcelService {
 		}
 	}
 	
-	public void writeToXlsCimisFirstGraph(String date, double airtemp, double dewpoint, double windspeed, double vappres, double soiltemp )
+	public void writeToXlsCimisFirstGraph(String date, double airtemp, double dewpoint, double windspeed, double vappres, double soiltemp, String filePath )
 	{
 			try {
 				HSSFWorkbook wb = null;
@@ -147,7 +144,7 @@ public class ExcelService {
 		}
 	}
 	
-	public void writeToXlsCimisSecGraph(String date, double relhum, double winddir )
+	public void writeToXlsCimisSecGraph(String date, double relhum, double winddir, String filePath )
 	{
 			try {
 				
@@ -206,7 +203,7 @@ public class ExcelService {
 		}
 	}
 	
-	public void writeToCsv2(String date, double airtemp, double dewpoint, double windspeed, double vappres, double soiltemp)
+	public void writeToCsv2(String date, double airtemp, double dewpoint, double windspeed, double vappres, double soiltemp, String filePath)
 	{
 			try {
 				//System.out.println("inside csv--->");
@@ -285,7 +282,7 @@ public class ExcelService {
 				e.printStackTrace();
 			}
 		  }
-	public void writeToCsv(String date, double relhum, double winddir)
+	public void writeToCsv(String date, double relhum, double winddir, String filePath)
 	{
 			try {
 				//System.out.println("inside csv--->");
@@ -339,7 +336,7 @@ public class ExcelService {
 				e.printStackTrace();
 			}
 		  }
-		  public void writeToCsvforblockname(String blockname, double  tapbrix)
+		  public void writeToCsvforblockname(String blockname, double  tapbrix, String filePath)
 	{
 			try {
 				//System.out.println("inside csv--->");

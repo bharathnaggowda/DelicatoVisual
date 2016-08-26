@@ -36,6 +36,7 @@ public class VisualController {
 	int comparision_start_year;
 	int comparision_end_year;
 	String mongolink;
+	String dir_path;
 	CompareData compareData;
 	CimisToMongodb cimisToMongodb;
 	DataService dataService;
@@ -61,10 +62,13 @@ public class VisualController {
 	          comparision_start_year = Integer.parseInt(configProp.getProperty("comparision_start_year"));
 	          comparision_end_year = Integer.parseInt(configProp.getProperty("comparision_end_year"));
 	          mongolink = configProp.getProperty("mongolink");
+	          dir_path = configProp.getProperty("dir_path");
+	          rootPath =dir_path;
+	          
 	          System.out.println("mongolink---->"+mongolink);
-	          compareData = new CompareData(mongolink);
+	          compareData = new CompareData(mongolink, rootPath);
 	          cimisToMongodb = new CimisToMongodb(mongolink);
-	          dataService = new DataService(mongolink);
+	          dataService = new DataService(mongolink, rootPath);
 	          pc = new PredictionController(mongolink);
 	          
 	          format = new SimpleDateFormat("MM/dd/yyyy");
@@ -74,9 +78,9 @@ public class VisualController {
 	      	 mongoConfig=new SpringMongoConfig();
 	      	 csvService = new CsvService();
 	      	
-	      	 rootPath =System.getProperty("user.dir");
+	      	 
 	      	 rScript = new File(rootPath+"/src/main/webapp/rQuery.txt");
-	      	 folder = new File(rootPath+"/src/main/webapp");
+	      	 folder = new File(dir_path);
 	      } catch (IOException e) {
 	          e.printStackTrace();
 	      }
