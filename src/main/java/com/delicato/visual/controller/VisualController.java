@@ -81,12 +81,16 @@ public class VisualController {
 		sortedGrapesList = new ArrayList<String>(dataService.getGrapeVeriety());
 		Collections.sort(sortedGrapesList);
 		model.addAttribute("grapes", sortedGrapesList);
-		
-		  for (File file : folder.listFiles()) {
-		   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
-		    file.delete();
-		   }
-		  }
+		try{
+			for (File file : folder.listFiles()) {
+				   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+				    file.delete();
+				   }
+				  }
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		  
 		
 		return "home";
 	}
@@ -95,11 +99,15 @@ public class VisualController {
 	@RequestMapping(value="/degreedays", method=RequestMethod.POST)
 	public String degreedays(Factors factors, Model model) 
 	{		
-		for (File file : folder.listFiles()) {
-			   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
-			    file.delete();
-			   }
-			  }
+		try{
+			for (File file : folder.listFiles()) {
+				   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+				    file.delete();
+				   }
+				  }
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		Date sDate = null;
 		Date eDate = null;
 		int minTempTheshold = Integer.MIN_VALUE;
@@ -139,11 +147,15 @@ public class VisualController {
 	@RequestMapping(value="/cimis", method=RequestMethod.POST)
 	public String cimisGraphs(Factors factors, Model model) 
 	{
-		for (File file : folder.listFiles()) {
-			   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
-			    file.delete();
-			   }
-			  }
+		try{
+			for (File file : folder.listFiles()) {
+				   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+				    file.delete();
+				   }
+				  }
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		Date sDate = null;
 		Date eDate = null;
 
@@ -198,11 +210,15 @@ public class VisualController {
 	@RequestMapping(value="/comparisions", method=RequestMethod.POST)
 	public String comparisions(Factors factors, Model model) 
 	{
-		for (File file : folder.listFiles()) {
-			   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
-			    file.delete();
-			   }
-			  }
+		try{
+			for (File file : folder.listFiles()) {
+				   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+				    file.delete();
+				   }
+				  }
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		model.addAttribute("blocks", sortedBlocksList);
 		model.addAttribute("grapes", sortedGrapesList);
 		String block = factors.getBlock();
@@ -223,11 +239,15 @@ public class VisualController {
 	@RequestMapping(value="/blocknames", method=RequestMethod.POST)
 	public String dyostemblockname(Factors factors, Model model) throws ParseException 
 	{
-		for (File file : folder.listFiles()) {
-			   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
-			    file.delete();
-			   }
-			  }
+		try{
+			for (File file : folder.listFiles()) {
+				   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+				    file.delete();
+				   }
+				  }
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		String grapename=null;
 		String blockname="";
 	     double tapbrix=0;
@@ -252,11 +272,15 @@ public class VisualController {
 	public String predictions(Factors factors, Model model) 
 	{
 		try{
-			for (File file : folder.listFiles()) {
-				   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
-				    file.delete();
-				   }
-				  }
+			try{
+				for (File file : folder.listFiles()) {
+					   if (file.getName().endsWith(".xls") || file.getName().endsWith(".csv")) {
+					    file.delete();
+					   }
+					  }
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 			
 			model.addAttribute("blocks", sortedBlocksList);
 			model.addAttribute("grapes", sortedGrapesList);
