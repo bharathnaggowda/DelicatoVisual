@@ -64,7 +64,7 @@ public class VisualController {
 	          mongolink = configProp.getProperty("mongolink");
 	          dir_path = configProp.getProperty("dir_path");
 	          
-	          rootPath =System.getenv("OPENSHIFT_DATA_DIR");
+	          rootPath ="~/app-root/data/";
 	          
 	          System.out.println("mongolink---->"+rootPath);
 	          compareData = new CompareData(mongolink, rootPath);
