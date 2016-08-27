@@ -1000,7 +1000,7 @@ var series6=  { color:'#030003',data: [], name: 'ph(2015)' };
 				},
 				series: []
 			};	
-			
+			alert(process.env.OPENSHIFT_DATA_DIR);
 			$.get('cimis1.csv', function(data) {
 				// Split the lines
 				var lines = data.split('\n');
