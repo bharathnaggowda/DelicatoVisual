@@ -63,9 +63,10 @@ public class VisualController {
 	          comparision_end_year = Integer.parseInt(configProp.getProperty("comparision_end_year"));
 	          mongolink = configProp.getProperty("mongolink");
 	          dir_path = configProp.getProperty("dir_path");
-	          rootPath =dir_path;
 	          
-	          System.out.println("mongolink---->"+mongolink);
+	          rootPath =System.getenv("OPENSHIFT_DATA_DIR");
+	          
+	          System.out.println("mongolink---->"+rootPath);
 	          compareData = new CompareData(mongolink, rootPath);
 	          cimisToMongodb = new CimisToMongodb(mongolink);
 	          dataService = new DataService(mongolink, rootPath);
