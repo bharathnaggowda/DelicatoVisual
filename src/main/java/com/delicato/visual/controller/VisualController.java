@@ -64,7 +64,7 @@ public class VisualController {
 	          mongolink = configProp.getProperty("mongolink");
 	          dir_path = configProp.getProperty("dir_path");
 	          
-	          rootPath ="~/app-root/data/";
+	          rootPath ="/tmp/";
 	          
 	          System.out.println("mongolink---->"+rootPath);
 	          compareData = new CompareData(mongolink, rootPath);
