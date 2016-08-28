@@ -897,7 +897,7 @@ var series6=  { color:'#030003',data: [], name: 'ph(2015)' };
 				series: []
 			};	
 			
-			$.get('cimis2.csv', function(data) {
+			$.get('~/app-root/data/cimis2.csv', function(data) {
 				// Split the lines
 				var lines = data.split('\n');
 					
@@ -1000,7 +1000,7 @@ var series6=  { color:'#030003',data: [], name: 'ph(2015)' };
 				},
 				series: []
 			};	
-			$.get('cimis1.csv', function(data) {
+			$.get('~/app-root/data/cimis1.csv', function(data) {
 				// Split the lines
 				var lines = data.split('\n');
 					
@@ -1080,7 +1080,7 @@ var series6=  { color:'#030003',data: [], name: 'ph(2015)' };
 					series: []
 				};	
 				
-				$.get('cimis4.csv', function(data) {
+				$.get('~/app-root/data/cimis4.csv', function(data) {
 					// Split the lines
 					var lines = data.split('\n');
 						
@@ -1172,7 +1172,7 @@ var series6=  { color:'#030003',data: [], name: 'ph(2015)' };
 				series: []
 			};	
 			
-			$.get('cimis3.csv', function(data) {
+			$.get('~/app-root/data/cimis3.csv', function(data) {
 				// Split the lines
 				var lines = data.split('\n');
 					
